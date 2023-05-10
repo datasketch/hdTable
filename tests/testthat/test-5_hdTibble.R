@@ -14,6 +14,10 @@ test_that("hdTibble", {
   expect_true(is_hdTibble(data))
 
 
+  d <- data.frame(x = NA)
+  hdTibble(d)
+
+
   data |>  filter(a == "black")
   data |>  select(a,b)
 

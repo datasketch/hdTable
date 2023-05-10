@@ -43,6 +43,10 @@ hdTableClass <- R6::R6Class(
       self$hdTableTypeGroup <- get_hdTableTypeGroup(hdTableType(dic$hdType))
 
     },
+
+    d = function(){
+      self$data |> setNames(self$dic$id)
+    },
     get_stats = function(){
       attr(self$vector, "stats")
     }

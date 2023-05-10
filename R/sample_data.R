@@ -48,14 +48,14 @@ sample_data <- function(frtype, n = 20, loremNames = TRUE,
 }
 
 #' @export
-sample_fringe <- function(frtype, ...){
-  d <- sample_data(frtype,...)
-  fringe(d)
+sample_hdTable <- function(hdTableType, ...){
+  d <- sample_data(hdTableType,...)
+  hdTable(d)
 }
 
 
 #' @export
-sample___ <- function(n,addNA = TRUE, ...){
+sampleUKT <- function(n,addNA = TRUE, ...){
   rep(NA,n)
 }
 

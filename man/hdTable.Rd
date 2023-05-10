@@ -11,7 +11,8 @@ hdTable(
   name = NULL,
   description = NULL,
   slug = NULL,
-  meta = NULL
+  meta = NULL,
+  ...
 )
 }
 \arguments{

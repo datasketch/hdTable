@@ -8,15 +8,21 @@ is_hdTibble <- function(d){
 }
 
 #' @export
-hdTibble <- function(df, dic = NULL){
+hdTibble <- function(d, dic = NULL){
+
+  if(is.null(dic)){
+    dic <- create_dic(d)
+  }
+
+
   hdts <- dic$hdType
   hdts_str <- as.character(hdts)
 
-  df <- as.data.frame(df)
+  d <- as.data.frame(d)
 
   # HERE GO ALL CASTS WITH GIVEN frType
-  dd <- purrr::map2(df, hdts_str, function(x1,y1){
-    if(y1 == "___") return(x1)
+  dd <- purrr::map2(d, hdts_str, function(x1,y1){
+    #if(y1 == "UKT") return(UKT(x1))
     do.call(y1, list(x1))
   })
   d <- dd %>% tibble::as_tibble()

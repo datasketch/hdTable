@@ -29,14 +29,17 @@ hdTable <- function(d,
                     name = NULL,
                     description = NULL,
                     slug = NULL,
-                    meta = NULL){
+                    meta = NULL,
+                    ...){
 
   if(is_hdTable(d)) return(d)
 
+  meta <- c(meta, list(...))
+  if(dstools::is.empty(meta)) meta <- NULL
+
   hdTableClass$new(d, dic = dic, hdTableType = hdTableType,
                name = name, description = description,
-               slug = slug, meta = meta
-  )
+               slug = slug, meta = meta)
 }
 
 
@@ -88,11 +91,12 @@ hdTable_stats <- function(f){
   f$stats
 }
 
+
 #' @export
-#' @importFrom dstools %||%
 hdTable_update_meta <- function(f, ...){
-  fixed <- c("data", "dic", "hdTableType", "group")
+  fixed <- c("data", "dic", "hdTableType", "hdTableGroupType")
   args <- list(...)
+  str(args)
   if(any(names(args) %in% fixed)){
     warning("Cannot update ",
             paste0(names(args)[names(args) %in% fixed], collapse = ", "),
@@ -100,11 +104,11 @@ hdTable_update_meta <- function(f, ...){
     args <- args[!names(args) %in% fixed]
   }
 
-  info <- list(name = args$name %||% f$name,
-               description = args$description %||% f$description,
-               slug = args$slug %||% dstools::create_slug(args$name),
-               meta = args[!names(args) %in% c("name", "description","slug")])
-  f <- modifyList(f, info)
+  f$name <- args$name %||% f$name
+  f$description <- args$description %||% f$description
+  f$slug <- args$slug %||% f$slug
+  meta <- args[!names(args) %in% c("name", "description","slug")]
+  f$meta <- modifyList(f$meta, meta)
   f$meta$sources <- args$sources %||% f$meta$sources
   f
 }
@@ -123,6 +127,12 @@ hdTable_labels <- function(f){
 hdTable_ids <- function(f){
   f$dic$id
 }
+
+
+
+
+
+
 
 #' @export
 hdTable_column <- function(f, column){

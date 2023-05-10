@@ -36,7 +36,7 @@ test_that("Sample Data", {
 
   t <- sample_data("Cat-Num")
 
-  homodatum:::sampleCat(10)
+  sampleCat(10)
 
 
 

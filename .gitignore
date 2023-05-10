@@ -24,3 +24,8 @@ hdTable.Rcheck/
 hdTable*.tar.gz
 hdTable*.tgz
 docs
+
+tmp/
+tmp/*
+
+
