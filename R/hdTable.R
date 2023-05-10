@@ -30,6 +30,7 @@ hdTable <- function(d,
                     description = NULL,
                     slug = NULL,
                     meta = NULL,
+                    formats = NULL,
                     ...){
 
   if(is_hdTable(d)) return(d)
@@ -39,7 +40,7 @@ hdTable <- function(d,
 
   hdTableClass$new(d, dic = dic, hdTableType = hdTableType,
                name = name, description = description,
-               slug = slug, meta = meta)
+               slug = slug, meta = meta, formats = formats)
 }
 
 
@@ -109,7 +110,6 @@ hdTable_update_meta <- function(f, ...){
   f$slug <- args$slug %||% f$slug
   meta <- args[!names(args) %in% c("name", "description","slug")]
   f$meta <- modifyList(f$meta, meta)
-  f$meta$sources <- args$sources %||% f$meta$sources
   f
 }
 
