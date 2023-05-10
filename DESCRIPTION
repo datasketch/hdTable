@@ -1,0 +1,30 @@
+Package: hdTable
+Title: Homodatum Table
+Version: 0.0.1
+Authors@R: 
+    person(given = "Juan Pablo",
+           family = "Marin Diaz",
+           role = c("aut", "cre"),
+           email = "jpmarindiaz@gmail.com")
+Description: Vector definitions for abstract data types
+URL: https://github.com/datasketch/hdTable
+License: MIT + file LICENSE
+Encoding: UTF-8
+BugReports: https://github.com/datasketch/hdTable/issues
+Depends:
+    R (>= 4.2),
+    vctrs
+Imports: 
+    hdTypes,
+    R6,
+    tibble,
+    dplyr,
+    lubridate,
+    dstools (>= 0.1.0),
+    purrr,
+    geodato
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
