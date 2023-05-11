@@ -7,6 +7,12 @@ test_that("Fringe IO works", {
   expected_write_ext <- c(".csv", ".dic.csv", ".dic.json", ".json",
                                 ".meta.json", ".xlsx")
 
+
+  hdtab$write_csv("tmp/tmp2")
+  hdtab$write_meta_json("tmp/tmp2")
+  hdtab$write_json("tmp/tmp2")
+  hdtab$write_xlsx("tmp/tmp2")
+
   hdtab$write("tmp/tab1")
   expect_equal(list.files("tmp/tab1"), paste0(hdtab$slug, expected_write_ext))
 
@@ -28,6 +34,12 @@ test_that("Fringe IO works", {
   hdtab$write_csv("tmp/tab2")
   hdtab$write_meta_json("tmp/tab2")
   hdtab$write_json("tmp/tab2")
+
+  l <- jsonlite::read_json("tmp/tab2/los-carros.dic.json")
+  l <- purrr::transpose(l)
+  expect_true(!is.null(l$format))
+  expect_true(!is.null(l$stats))
+
   hdtab$write_xlsx("tmp/tab2")
 
   expected_files <- c('los-carros.csv', 'los-carros.dic.csv',

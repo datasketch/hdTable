@@ -80,7 +80,7 @@ test_that("hdTable creation with dictionaries work",{
 
 
 
-test_that("hdTable dictionaries have correct format",{
+test_that("hdTable dictionaries are correct",{
 
   f <- sample_hdTable("Cat-Dat-Num-Pct", n = 11,
                      names = c("Category", "Dates", "Numbers","Percentages"))
@@ -133,6 +133,65 @@ test_that("hdTable dictionaries have correct format",{
   expect_true("hd_tbl" %in% class(f_hdTibble))
 
 })
+
+
+
+test_that("hdTable dictionaries have format",{
+
+  f <- sample_hdTable("Cat-Dat-Num-Pct", n = 11,
+                      names = c("Category", "Dates", "Numbers","Percentages"))
+
+  f$dic
+
+  dd <- hdTable_d(f)
+  nms <- dstools::create_slug(c("Category", "Dates", "Numbers","Percentages"))
+  expect_equal(names(dd), nms)
+  expect_equal(purrr::map_chr(dd, class),
+               c("category" = "character", "dates" = "Date",
+                 "numbers" = "numeric", "percentages" = "numeric"))
+  expect_true(all(!purrr::map_lgl(dd, is_hdType)))
+
+
+  # New hdTable with dic
+
+  data <- data.frame(book = c("Black", "Red"),
+                     value = 1:2,
+                     dates = c("28/04/2019", "4/12/2018"))
+  dic <- data.frame(id = names(data),
+                    hdType = c("Cat","Num","Dat"))
+  f <- hdTable(data, dic = dic)
+
+  expect_equal(dic$id, f$dic$id)
+  expect_equivalent(hdType(dic$hdType), f$dic$hdType)
+
+  f_data <- hdTable_data(f)
+  expect_false("hd_tbl" %in% class(f_data))
+
+  f_hdTibble <- hdTable_hdTibble(f)
+  expect_true("hd_tbl" %in% class(f_hdTibble))
+
+  #
+
+  data <- data.frame(
+    a = Cat(c("black", "white")),
+    b = Dat(seq.Date(from = as.Date("2000-01-01"), by = "day", length.out = 2)),
+    c = Yea(2001:2002),
+    d = Num(runif(2)*10),
+    e = Pct(runif(2))
+  )
+  class(data)
+  f <- hdTable(data)
+  f_data <- hdTable_data(f)
+
+  expect_false("hd_tbl" %in% class(f_data))
+
+  f_hdTibble <- hdTable_hdTibble(f)
+  expect_true("hd_tbl" %in% class(f_hdTibble))
+
+})
+
+
+
 
 test_that("hdTable with metadata", {
 

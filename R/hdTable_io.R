@@ -33,7 +33,16 @@ hdTable_read <- function(path, slug = NULL){
                        col_types = readr::cols())
   dic <- readr::read_csv(file.path(path, paste0(slug,".dic.csv")),
                          col_types = readr::cols())
+  dic <- update_dic(dic, d)
   names(d) <- dic$label
+  # dic <- jsonlite::read_json(file.path(path, paste0(slug,".dic.json")))
+  #
+  # purrr::map(dic, tibble::as_tibble)
+  #
+  # x <- purrr::transpose(dic)
+  # tibble::as_tibble(x)
+  #
+  # names(d) <- dic$label
 
   hdTable(d, dic = dic,
          name = meta_json$name, description = meta_json$description,

@@ -115,7 +115,10 @@ hdTableClass <- R6::R6Class(
       save_path <- file.path(path, paste0(self$slug,".csv"))
       readr::write_csv(self$d(), save_path)
       dic_path <- file.path(path,paste0(self$slug,".dic.csv"))
-      readr::write_csv(self$dic, dic_path)
+      dic <- self$dic
+      dic$format <- NULL
+      dic$stats <- NULL
+      readr::write_csv(dic, dic_path)
     },
     write_json = function(path = ""){
       if(!dir.exists(path)) dir.create(path, recursive = TRUE)
@@ -133,6 +136,8 @@ hdTableClass <- R6::R6Class(
       d <- self$d()
       dic <- self$dic
       dic$hdType <- NULL
+      dic$format <- NULL
+      dic$stats <- NULL
 
       info <- self$metadata()
       info$hdTableType <- NULL
@@ -145,6 +150,8 @@ hdTableClass <- R6::R6Class(
       openxlsx::addWorksheet(wb, "Data")
       openxlsx::addWorksheet(wb, "Dictionary")
       openxlsx::addWorksheet(wb, "Info")
+
+      str(dic)
 
       openxlsx::writeDataTable(wb, 1, d)
       openxlsx::writeDataTable(wb, 2, dic)

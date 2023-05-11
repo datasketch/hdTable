@@ -6,7 +6,7 @@
 #' @param d The data set for which the user is creating the dictionary for
 #' @param hdTableType pre-defined fringe types (check available_hdTypes() for the complete list)
 #'
-#' @return a data frame with three columns: id, label and hdType
+#' @return a data frame with five columns: id, label, hdType, format and stats
 #' @export
 #'
 #' @examples
@@ -29,11 +29,40 @@ create_dic <- function(d, hdTableType = NULL){
   dic <-tibble::tibble(id = ids, label = names(d),
                        hdType = hdTableType_hdTypes(hdTableType))
 
-  field_stats <- get_fields(d, dic, "stats")
+  dic <- update_dic(dic, d)
 
   dic
 
 }
+
+
+#' @title Update Dictionary with data
+#' @description `update_dic()` Creates a data.frame dictionary identifying column
+#' id (with cleaned variable names), label and homodatum variable type
+#'
+#' @param dic The original dictionary
+#' @param d The data set for which the user is creating the dictionary for
+#'
+#' @return a data frame with five columns: id, label, hdType, format and stats
+#' @export
+#'
+#' @examples
+#' d <- mtcars
+#' new_dic <- create_dic(d)
+update_dic <- function(dic, d){
+
+  if(! (all(names(d) == dic$id) || all(names(d) == dic$label))){
+      stop("Names of data do not correspond to dictionary columns ids or labels")
+  }
+
+  # Update format and stats
+  dic$format <- get_fields(d, dic, "format")
+  dic$stats <- get_fields(d, dic, "stats")
+
+  dic
+
+}
+
 
 
 
