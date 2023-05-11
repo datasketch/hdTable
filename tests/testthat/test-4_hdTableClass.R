@@ -2,10 +2,11 @@ test_that("hdTable", {
 
   d <- cars
   t1 <- hdTableClass$new(d)
-
+  t1$name
   expect_true(inherits(t1, "hdTable"))
 
   t2 <- hdTable(d)
+  t2$name
   expect_equal(t1$data,t2$data)
   expect_equal(t1$dic, t2$dic)
   expect_equal(t1, t2)

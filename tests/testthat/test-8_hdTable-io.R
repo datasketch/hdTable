@@ -28,12 +28,13 @@ test_that("Fringe IO works", {
 
   expected_write_ext_with_preview <- c(".csv", ".dic.csv", ".dic.json", ".json",
                           ".meta.json", ".preview.json")
-  ht <- hdTable(tibble::tibble(n = 1:20))
+  tib <- tibble::tibble(n = 1:20)
+  ht <- hdTable(tib)
   ht$preview_max_nrow <- 10
   ht$write("tmp/larger")
   expect_equal(list.files("tmp/larger"),
                paste0(ht$slug, expected_write_ext_with_preview))
-  prev <- jsonlite::read_json("tmp/larger/d.preview.json", simplifyVector = TRUE)
+  prev <- jsonlite::read_json("tmp/larger/tib.preview.json", simplifyVector = TRUE)
   nrow(prev)
   expect_equal(nrow(prev), ht$preview_max_nrow)
   unlink("tmp/larger", recursive = TRUE)

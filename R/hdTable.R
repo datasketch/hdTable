@@ -35,6 +35,7 @@ hdTable <- function(d,
 
   if(is_hdTable(d)) return(d)
 
+  name <- name %||% deparse(substitute(d))
   meta <- c(meta, list(...))
   if(dstools::is.empty(meta)) meta <- NULL
 
