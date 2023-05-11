@@ -35,6 +35,7 @@ test_that("Fringe IO works", {
   hdtab$write_meta_json("tmp/tab2")
   hdtab$write_json("tmp/tab2")
 
+  # Ensure format and stats are saved in dic.json, not in dic.csv
   l <- jsonlite::read_json("tmp/tab2/los-carros.dic.json")
   l <- purrr::transpose(l)
   expect_true(!is.null(l$format))
