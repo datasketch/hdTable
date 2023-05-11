@@ -2,6 +2,7 @@ test_that("hdTable", {
 
   d <- hdTable(NULL)
   expect_null(d$data)
+  expect_null(d$dic)
 
 
   # NA hdTables
@@ -38,10 +39,11 @@ test_that("hdTable", {
   expect_equal(d, f$data)
 
   names(d) <- dstools::create_slug(names(d))
-  expect_equal(d, f$d())
+  expect_equal(d, f$tibble())
+  expect_equal(d, f$d(), ignore_attr = TRUE)
 
-  expect_equal(hdTable_stats(f)$nrow, 11)
-  expect_equal(hdTable_stats(f)$ncol, 4)
+  expect_equal(f$metadata()$nrow, 11)
+  expect_equal(f$metadata()$ncol, 4)
 
 })
 
@@ -86,9 +88,11 @@ test_that("hdTable dictionaries have correct format",{
   f$d()
 
   dd <- hdTable_d(f)
-  expect_equal(names(dd), c('a','b','c','d'))
+  nms <- dstools::create_slug(c("Category", "Dates", "Numbers","Percentages"))
+  expect_equal(names(dd), nms)
   expect_equal(purrr::map_chr(dd, class),
-               c(a = "character", b = "Date", c = "numeric", d = "numeric"))
+               c("category" = "character", "dates" = "Date",
+                 "numbers" = "numeric", "percentages" = "numeric"))
   expect_true(all(!purrr::map_lgl(dd, is_hdType)))
 
 
@@ -130,7 +134,22 @@ test_that("hdTable dictionaries have correct format",{
 
 })
 
-test_that("hdTable", {
+test_that("hdTable with metadata", {
+
+  d <- tibble::tibble("Helloo X" = 1, "x 43" = as.Date("2020-04-21"))
+  hdtab <- hdTable(d, name = "Los Carros", mas = "fda")
+  expect_equal(hdtab$formats, c("csv", "json"))
+
+
+  d <- tibble::tibble("Helloo X" = 1, "x 43" = as.Date("2020-04-21"))
+  hdtab <- hdTable(d, name = "Los Carros", mas = "fda", formats = "xlsx")
+  expect_true(hdtab$meta$mas == "fda")
+  expect_true(hdtab$slug == "los-carros")
+  expect_equal(hdtab$formats, c("csv", "json", "xlsx"))
+  expect_equal(hdtab$formats, hdtab$metadata()$formats)
+
+
+
 
   f0 <- hdTable(mtcars, name = "Mtcars", access = "private")
   expect_equal(f0$name, "Mtcars")
@@ -150,14 +169,20 @@ test_that("hdTable", {
 
   sources <- list(title = "source name", path = "url-of-source")
 
-  f4 <- hdTable(mtcars, sources = sources)
+  f4 <- hdTable(mtcars, sources = sources, license = "MIT")
+
   expect_equal(f4$meta$sources, sources)
+  expect_equal(f4$meta$license, "MIT")
 
   sources_update <- list()
   sources_update[[1]] <- sources
   sources_update[[2]] <- list(title = "another source", path = "url-of-source")
 
-  f5 <- hdTable_update_meta(f4, name = "this data", sources = sources_update)
+  f5 <- hdTable_update_meta(f4, name = "this data",
+                            sources = sources_update,
+                            more = "Más info")
+  f5$meta
+  expect_equal(f5$meta$more, "Más info")
   expect_equal(f5$meta$sources, sources_update)
   expect_equal(f5$name, "this data")
 

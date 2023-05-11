@@ -31,6 +31,9 @@ new_hdTableType <- function(x = character()){
 #'
 #' @export
 get_hdTableTypeGroup <- function(hdTableType_str){
+
+  if(is.null(hdTableType_str)) return()
+
   ctps <- strsplit(hdTableType_str,"-")
   f <- function(hdtypes){
     ct <- dplyr::count(tibble::tibble(hdtypes = hdtypes),hdtypes)
@@ -87,6 +90,7 @@ expand_hdTableTypeGroup <- function(hdTableTypeGroup){
 #'
 #' @export
 hdTableType <- function(x = character()) {
+  if(is.null(x)) return()
   if(is_hdType(x)){
     # x <- vctrs::vec_cast(x, character()) # Not working!
     x <- vctrs::vec_data(x)

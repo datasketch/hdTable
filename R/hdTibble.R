@@ -10,6 +10,7 @@ is_hdTibble <- function(d){
 #' @export
 hdTibble <- function(d, dic = NULL){
 
+  if(is_hdTibble(d)) return(d)
   if(is.null(dic)){
     dic <- create_dic(d)
   }

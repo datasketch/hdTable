@@ -63,41 +63,14 @@ is_hdTable <- function(x) {
 }
 
 
-calculate_hdTable_stats <- function(d, dic){
 
-  # https://stackoverflow.com/questions/38983179/do-call-a-function-in-r-without-loading-the-package
-  getfun <- function(x) {
-    if(length(grep("::", x)) > 0) {
-      parts <- strsplit(x, "::")[[1]]
-      getExportedValue(parts[1], parts[2])
-    } else {
-      x
-    }
-  }
-
-  stats <- purrr::map(d, function(col){
-    hdtype <- hdTypes::which_hdType(col)
-    if(length(hdtype) != 0){
-      do.call(getfun(paste0("hdTypes::",hdtype, "_get_stats")), list(col))
-    }else{
-      NA
-    }
-  })
-
-  list(nrow = nrow(d), ncol = ncol(d), col_stats = stats)
-}
-
-#' @export
-hdTable_stats <- function(f){
-  f$stats
-}
 
 
 #' @export
 hdTable_update_meta <- function(f, ...){
   fixed <- c("data", "dic", "hdTableType", "hdTableGroupType")
+  message("args")
   args <- list(...)
-  str(args)
   if(any(names(args) %in% fixed)){
     warning("Cannot update ",
             paste0(names(args)[names(args) %in% fixed], collapse = ", "),
@@ -109,7 +82,14 @@ hdTable_update_meta <- function(f, ...){
   f$description <- args$description %||% f$description
   f$slug <- args$slug %||% f$slug
   meta <- args[!names(args) %in% c("name", "description","slug")]
-  f$meta <- modifyList(f$meta, meta)
+  common_names <- intersect(names(f$meta), names(meta))
+  # Delete info from common names
+  purrr::walk(common_names, function(nm){
+    message(nm)
+   f$meta[[nm]] <- NULL
+  })
+  updated_meta <- purrr::list_modify(list(f$meta), meta)[[1]]
+  f$meta <- updated_meta
   f
 }
 
@@ -158,8 +138,7 @@ hdTable_column <- function(f, column){
 
 #'@export
 hdTable_d <- function(f){
-  purrr::map_df(f$data, as_baseType) %>%
-    purrr::set_names(letterNames(nrow(f$dic)))
+  f$d()
 }
 
 #'@export

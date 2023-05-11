@@ -12,6 +12,7 @@ hdTable(
   description = NULL,
   slug = NULL,
   meta = NULL,
+  formats = NULL,
   ...
 )
 }
