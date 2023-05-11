@@ -14,6 +14,8 @@ hdTableClass <- R6::R6Class(
     field_stats = NULL,
     nrow = NULL,
     ncol = NULL,
+    preview_max_nrow = NULL,
+    preview_max_ncol = NULL,
     credits = NULL,
 
     initialize = function(d, dic = NULL, hdTableType = NULL,
@@ -57,6 +59,8 @@ hdTableClass <- R6::R6Class(
 
       self$nrow <- nrow(self$data)
       self$ncol <- ncol(self$data)
+      self$preview_max_nrow <- 1000
+      self$preview_max_ncol <- 10
 
       self$credits <- "Dataset hosted at http://datasketch.co"
 
@@ -102,7 +106,6 @@ hdTableClass <- R6::R6Class(
       gsub("write_","", nms)
     },
     write = function(path = ""){
-      message(path)
       self$write_meta_json(path)
       purrr::walk(self$formats, function(format){
         self[[paste0("write_", format)]](path)
@@ -123,7 +126,20 @@ hdTableClass <- R6::R6Class(
     write_json = function(path = ""){
       if(!dir.exists(path)) dir.create(path, recursive = TRUE)
       save_path <- file.path(path,  paste0(self$slug,".json"))
-      jsonlite::write_json(self$d(), save_path, auto_unbox = TRUE)
+      d <- self$d()
+      jsonlite::write_json(d, save_path, auto_unbox = TRUE)
+      # Save preview first 10 cols, 1000 rows
+      # Only when data is bigger than the nrow and ncols of preview
+      nc <- self$preview_max_ncol
+      nr <- self$preview_max_nrow
+      if(self$ncol > nc || self$nrow > nr){
+        preview <- d |>
+          dplyr::select(dplyr::any_of(1:nc)) |>
+          dplyr::slice(1:nr)
+        preview_path <- file.path(path,  paste0(self$slug,".preview.json"))
+        jsonlite::write_json(preview, preview_path, auto_unbox = TRUE)
+      }
+      # Save dic.json
       dic_path <- file.path(path,paste0(self$slug,".dic.json"))
       dic <- self$dic
       dic$hdType <- as.character(dic$hdType)
