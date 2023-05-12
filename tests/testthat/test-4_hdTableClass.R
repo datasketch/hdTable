@@ -20,6 +20,8 @@ test_that("hdTable", {
   )
   hdTable(d)
 
+  t <- hdTable(iris)
+  t$name
 
 
 })

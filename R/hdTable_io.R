@@ -2,8 +2,8 @@
 
 #' @export
 hdTable_write <- function(hdtab, path = ""){
-  if(!is_hdTable(x))
-    stop("x is not a hdTable")
+  if(!is_hdTable(hdtab))
+    stop("hdtab is not a hdTable")
   hdtab$write(path)
 }
 

@@ -17,9 +17,15 @@ test_that("Fringe IO works", {
   hdtab$write("tmp/tab1")
   expect_equal(list.files("tmp/tab1"), paste0(hdtab$slug, expected_write_ext))
 
+  hdTable_write(hdtab, "tmp/tab2")
+
+  expect_equal(list.files("tmp/tab1"), list.files("tmp/tab2"))
+
   unlink("tmp/tab1", recursive = TRUE)
+  unlink("tmp/tab2", recursive = TRUE)
 
   expect_equal(hdtab$available_write_formats(), c("xlsx", "json", "csv"))
+
 
 
 
