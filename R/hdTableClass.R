@@ -10,7 +10,7 @@ hdtableClass <- R6::R6Class(
     formats = NULL,
     meta = NULL,
     hdtable_type_group = NULL,
-    data = NULL,
+    dd = NULL,
     field_stats = NULL,
     nrow = NULL,
     ncol = NULL,
@@ -36,10 +36,17 @@ hdtableClass <- R6::R6Class(
       } else {
         dic$hdtype <- dic$hdtype %||% hdtable_type_hdtypes(guess_hdtable_type(d))
         dic$hdtype <- as_hdtype(dic$hdtype)
+        if(is.null(dic$fld___id)) dic$fld___id <- random_id_vector(nrow(dic))
         dic <- tibble::as_tibble(dic)
       }
+      dd <- d
       if(!is_hdtibble(d)){
-        d <- hdtibble(d, dic)
+        dd <- hdtibble(d, dic)
+      }
+      if(is.null(dd$rcd___id)){
+        if(!is.null(dd)){
+          dd$rcd___id <- random_id_vector(nrow(d))
+        }
       }
 
       self$name <- name
@@ -53,12 +60,12 @@ hdtableClass <- R6::R6Class(
       self$meta <- meta
 
       self$dic <- dic
-      self$data <- d
+      self$dd <- dd
       self$hdtable_type <- hdtable_type(paste0(dic$hdtype, collapse = "-"))
       self$hdtable_type_group <- get_hdtable_type_group(hdtable_type(dic$hdtype))
 
-      self$nrow <- nrow(self$data)
-      self$ncol <- ncol(self$data)
+      self$nrow <- nrow(self$dd)
+      self$ncol <- nrow(self$dic)
       self$preview_max_nrow <- 1000
       self$preview_max_ncol <- 10
 
@@ -68,11 +75,13 @@ hdtableClass <- R6::R6Class(
     },
 
     d = function(){
-      d <- purrr::map_df(self$data, as_baseType)
-      d |> setNames(self$dic$id)
+      if(is.null(self$dd)) return()
+      dout <- hdtibble_as_basetype(self$dd)
+      dout <- dout |> dplyr::select(-rcd___id)
+      dout |> setNames(self$dic$id)
     },
     tibble = function(){
-      self$data |> setNames(self$dic$id)
+      self$dd |> setNames(c(self$dic$id, "rcd___id"))
     },
     metadata = function(){
       base_info <- list(
@@ -154,6 +163,7 @@ hdtableClass <- R6::R6Class(
       dic$hdtype <- NULL
       dic$format <- NULL
       dic$stats <- NULL
+      dic$fld___id <- NULL
 
       info <- self$metadata()
       info$hdtable_type <- NULL
@@ -174,7 +184,17 @@ hdtableClass <- R6::R6Class(
       openxlsx::saveWorkbook(wb, file = save_path, overwrite = TRUE)
 
     }
-
+  )
+  ,
+  active = list(
+    data = function(value) {
+      if (missing(value)){
+        return(self$d())
+      }
+      ## TODO
+      # hdt$data <- mtcars, # assigns mtcars to the data
+      # need to validate and update dictionary
+    }
   )
 )
 

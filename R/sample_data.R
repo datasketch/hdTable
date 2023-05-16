@@ -49,6 +49,7 @@ sample_data <- function(frtype, n = 20, loremNames = TRUE,
 
 #' @export
 sample_hdtable <- function(hdtable_type, ...){
+  # hdtable_type <- "Cat-Dat-Num-Pct"
   d <- sample_data(hdtable_type,...)
   hdtable(d)
 }

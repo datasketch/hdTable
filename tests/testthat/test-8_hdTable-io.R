@@ -79,7 +79,8 @@ test_that("Fringe IO works", {
   hdtab2 <- hdtable_read(path)
 
   expect_equal(hdtab$data, hdtab2$data)
-  expect_equal(hdtab$dic, hdtab2$dic)
+  expect_equal(hdtab$dic |> dplyr::select(-fld___id),
+               hdtab2$dic |> dplyr::select(-fld___id))
   expect_equal(hdtab$meta, hdtab2$meta)
 
   unlink("tmp/tab2", recursive = TRUE)

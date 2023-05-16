@@ -1,5 +1,10 @@
 test_that("hdtable", {
 
+  d <- NULL
+  f <- hdtableClass$new(d)
+  expect_null(f$data)
+
+
   d <- cars
   t1 <- hdtableClass$new(d)
   t1$name
@@ -8,8 +13,12 @@ test_that("hdtable", {
   t2 <- hdtable(d)
   t2$name
   expect_equal(t1$data,t2$data)
-  expect_equal(t1$dic, t2$dic)
-  expect_equal(t1, t2)
+  expect_equal(t1$dic |> dplyr::select(-fld___id),
+               t2$dic |> dplyr::select(-fld___id))
+  expect_equal(t1$name, t2$name)
+  expect_equal(t1$d(), t2$d())
+  expect_equal(hdtibble_as_basetype(t1$dd) |> dplyr::select(-rcd___id),
+               hdtibble_as_basetype(t2$dd) |> dplyr::select(-rcd___id))
 
   d <- data.frame(
     a = Cat(c("black", "white")),

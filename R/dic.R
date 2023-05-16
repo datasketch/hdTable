@@ -22,15 +22,16 @@ create_dic <- function(d, hdtable_type = NULL){
       hdtable_type <- guess_hdtable_type(d)
     }
   }
-  if(!is_hdtable_type(hdtable_type))
+  if(!is_hdtable_type(hdtable_type)){
     hdtable_type <- hdtable_type(hdtable_type)
+  }
   ids <- col_ids_from_name(names(d))
 
   dic <-tibble::tibble(id = ids, label = names(d),
                        hdtype = hdtable_type_hdtypes(hdtable_type))
 
   dic <- update_dic(dic, d)
-
+  dic$fld___id <- random_id_vector(nrow(dic))
   dic
 
 }
@@ -50,7 +51,6 @@ create_dic <- function(d, hdtable_type = NULL){
 #' d <- mtcars
 #' new_dic <- create_dic(d)
 update_dic <- function(dic, d){
-
   if(! (all(names(d) == dic$id) || all(names(d) == dic$label))){
       stop("Names of data do not correspond to dictionary columns ids or labels")
   }
@@ -58,7 +58,7 @@ update_dic <- function(dic, d){
   # Update format and stats
   dic$format <- get_fields(d, dic, "format")
   dic$stats <- get_fields(d, dic, "stats")
-
+  # Keeps the same rcd_ids from before
   dic
 
 }
@@ -70,7 +70,7 @@ get_fields <- function(d, dic, what = "format"){
   # what can by 'format' or 'stats'
   names(d) <- dic$id
   d <- hdtibble(d, dic = dic)
-
+  if(!is.null(d$rcd___id)) d$rcd___id <- NULL
   purrr::map2(d, dic$hdtype, function(field, hdtype){
     fun_str <- paste0("hdtype::",hdtype, "_", what)
     do.call(getfun(fun_str), list(field))

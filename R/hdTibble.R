@@ -27,10 +27,15 @@ hdtibble <- function(d, dic = NULL){
     do.call(y1, list(x1))
   })
   d <- dd %>% tibble::as_tibble()
+  d$rcd___id <- random_id_vector(nrow(d))
   class(d) <- c(class(d), "hd_tbl")
   d
 }
 
+
+hdtibble_as_basetype <- function(d){
+  purrr::map_df(d, as_baseType)
+}
 
 
 hdtibble_frType <- function(d){

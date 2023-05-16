@@ -17,14 +17,21 @@ test_that("hdtable", {
   hdtibble(d, dic)
   hdtab <- hdtable(d)
 
-  hdtab$stats
+  hdtab$tibble() ### TODO fix empty name in tibble
+  hdtab$dd
+  hdtab$d()
+  hdtab$data
 
   f <- hdtable(cars)
-  length(f) # 13 ----> fields in the class
+  length(f) # 27??? ----> fields in the class
+
+  # check fld_id created with 8 random characters and numbers
+  expect_true(all(grepl("^\\b[a-zA-Z0-9]{8}\\b$",f$dic$fld___id))) # check they have 8 letters
 
   fr <- hdtable(cars)
   expect_equal(f$data, fr$data)
-  expect_equal(f$dic, fr$dic)
+  expect_equal(f$dic |> dplyr::select(-fld___id),
+               fr$dic |> dplyr::select(-fld___id))
   # expect_equal(f$frtype, fr$frtype) ### TODO
   expect_equal(f$group, fr$group)
 
@@ -32,18 +39,23 @@ test_that("hdtable", {
   expect_true(inherits(hdtable(cars),"hdtable"))
 
 
+  ### SAMPLE DATA
+
   d <- sample_data("Cat-Dat-Num-Pct", n = 11,
                   names = c("Category", "Dates", "Numbers","Percentages"))
   names(d)
   f <- hdtable(d)
-  expect_equal(d, f$data)
 
-  names(d) <- dstools::create_slug(names(d))
-  expect_equal(d, f$tibble())
+  f$dic
+  f$dd
+  f$d()
+
   expect_equal(d, f$d(), ignore_attr = TRUE)
-
   expect_equal(f$metadata()$nrow, 11)
   expect_equal(f$metadata()$ncol, 4)
+
+  names(d) <- dstools::create_slug(names(d))
+  expect_equal(d, f$tibble() |> dplyr::select(-rcd___id))
 
 })
 
@@ -64,16 +76,19 @@ test_that("hdtable creation with dictionaries work",{
                     hdtype = c("Num", "Cat"),
                     stringsAsFactors = FALSE)
   f2 <- hdtable(d, dic = dic)
-  expect_equivalent(hdtable_d(f2)[[2]], as.character(cars[[2]]))
-  expect_equivalent(names(hdtable_data(f2)), dic$id)
-  expect_equivalent(names(hdtable_data(f2, labels =TRUE)), dic$label)
+  expect_equal(hdtable_d(f2)[[2]], as.character(cars[[2]]), ignore_attr = TRUE)
+  expect_equal(names(hdtable_data(f2)), dic$id, ignore_attr = TRUE)
+  expect_equal(names(hdtable_data(f2, labels =TRUE)), dic$label, ignore_attr = TRUE)
 
   dic <- data.frame(label = c("speed", "dist"),
                     id = c("speed", "dist"),
                     description = c("SPEED", "DIST"))
   f3 <- hdtable(d, dic = dic)
-  expect_equal(f3, f)
-
+  #expect_equal(f3, f)
+  expect_equal(f3$name, f$name)
+  expect_equal(f3$data, f$data)
+  expect_equal(f3$dic |> dplyr::select(-fld___id),
+               f$dic |> dplyr::select(-fld___id))
   #expect_equal(as.character(f3$hdtable_type_group), hdtable_type(f3))
 
 })

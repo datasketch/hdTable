@@ -1,5 +1,10 @@
 
 
+random_id_vector <- function(len){
+  purrr::map_chr(1:len, ~ dstools::random_name(n = 8))
+}
+
+
 col_ids_from_name <- function (x, sep = "_"){
   x <- gsub("[^[:alnum:]]", "_", x)
   x <- dstools::remove_accents(x)
