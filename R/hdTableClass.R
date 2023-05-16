@@ -135,7 +135,8 @@ hdtableClass <- R6::R6Class(
     write_json = function(path = ""){
       if(!dir.exists(path)) dir.create(path, recursive = TRUE)
       save_path <- file.path(path,  paste0(self$slug,".json"))
-      d <- self$d()
+      dd <- self$dd
+      d <- hdtibble_as_basetype(dd)
       jsonlite::write_json(d, save_path, auto_unbox = TRUE)
       # Save preview first 10 cols, 1000 rows
       # Only when data is bigger than the nrow and ncols of preview

@@ -12,6 +12,11 @@ test_that("Fringe IO works", {
   hdtab$write_csv("tmp/tmp2")
   hdtab$write_meta_json("tmp/tmp2")
   hdtab$write_json("tmp/tmp2")
+
+  json <- jsonlite::read_json("tmp/tmp2/los-carros.json", simplifyVector = TRUE)
+  expect_equal(names(d), names(json |> dplyr::select(-rcd___id)))
+  expect_true(!is.null(json$rcd___id))
+
   hdtab$write_xlsx("tmp/tmp2")
 
   hdtab$write("tmp/tab1")
