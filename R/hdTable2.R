@@ -3,24 +3,24 @@
 #'
 #'
 #' #' @export
-#' is_hdTable <- function(d){
+#' is_hdtable <- function(d){
 #'   all(purrr::map_lgl(d, hdField::is_any_hdField))
 #' }
 #'
 #' #' @export
-#' hdTable <- function(df, hdTableType = NULL){
+#' hdtable <- function(df, hdtableType = NULL){
 #'
-#'   if(is.null(hdTableType)){
-#'     hdTableType <- guess_hdTableType(df)
+#'   if(is.null(hdtableType)){
+#'     hdtableType <- guess_hdtableType(df)
 #'   }
-#'   if(!is_hdTableType(hdTableType)){
-#'     hdTableType <- hdTableType(hdTableType)
+#'   if(!is_hdtableType(hdtableType)){
+#'     hdtableType <- hdtableType(hdtableType)
 #'   }
-#'   hdtypes <- hdTableType_hdTypes(hdTableType)
+#'   hdtypes <- hdtableType_hdtypes(hdtableType)
 #'   hdtypes_str <- vctrs::vec_data(hdtypes)
 #'
 #'   df <- as.data.frame(df)
-#'   # HERE GO ALL CASTS WITH GIVEN hdTableType
+#'   # HERE GO ALL CASTS WITH GIVEN hdtableType
 #'   dd <- purrr::map2(df, hdtypes_str, function(x1,y1){
 #'     if(y1 == "___") return(x1)
 #'     do.call(y1, list(x1))
@@ -32,15 +32,15 @@
 #'
 #'
 #'
-#' hdTable_hdTableType <- function(d){
-#'   hdTableType(hdType(purrr::map_chr(d, which_hdType)))
+#' hdtable_hdtableType <- function(d){
+#'   hdtableType(hdtype(purrr::map_chr(d, which_hdtype)))
 #' }
 #'
 #'
 #'
 #' #' @export
-#' hdTable_hdTypes <- function(d){
-#'   hdType(purrr::map_chr(d, which_hdType))
+#' hdtable_hdtypes <- function(d){
+#'   hdtype(purrr::map_chr(d, which_hdtype))
 #' }
 #'
 #'

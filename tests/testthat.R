@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
 library(testthat)
-library(hdTable)
+library(hdtable)
 
-test_check("hdTable")
+test_check("hdtable")

@@ -1,4 +1,4 @@
-test_that("hdTibble", {
+test_that("hdtibble", {
 
   library(dplyr)
 
@@ -11,11 +11,11 @@ test_that("hdTibble", {
   )
   class(data)
 
-  expect_true(is_hdTibble(data))
+  expect_true(is_hdtibble(data))
 
 
   d <- data.frame(x = NA)
-  hdTibble(d)
+  hdtibble(d)
 
 
   data |>  filter(a == "black")

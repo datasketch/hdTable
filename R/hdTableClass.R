@@ -1,15 +1,15 @@
 
-hdTableClass <- R6::R6Class(
-  "hdTable",
+hdtableClass <- R6::R6Class(
+  "hdtable",
   public = list(
     dic = NULL,
-    hdTableType = NULL,
+    hdtableType = NULL,
     name = NULL,
     slug = NULL,
     description = NULL,
     formats = NULL,
     meta = NULL,
-    hdTableTypeGroup = NULL,
+    hdtableTypeGroup = NULL,
     data = NULL,
     field_stats = NULL,
     nrow = NULL,
@@ -18,7 +18,7 @@ hdTableClass <- R6::R6Class(
     preview_max_ncol = NULL,
     credits = NULL,
 
-    initialize = function(d, dic = NULL, hdTableType = NULL,
+    initialize = function(d, dic = NULL, hdtableType = NULL,
                           name = NULL, description = NULL,
                           slug = NULL, meta = NULL,
                           formats =  NULL,
@@ -32,14 +32,14 @@ hdTableClass <- R6::R6Class(
       formats <- unique(c(c('csv', 'json'), formats))
 
       if(is.null(dic)){
-        dic <- create_dic(d, hdTableType = hdTableType)
+        dic <- create_dic(d, hdtableType = hdtableType)
       } else {
-        dic$hdType <- dic$hdType %||% hdTableType_hdTypes(guess_hdTableType(d))
-        dic$hdType <- as_hdType(dic$hdType)
+        dic$hdtype <- dic$hdtype %||% hdtableType_hdtypes(guess_hdtableType(d))
+        dic$hdtype <- as_hdtype(dic$hdtype)
         dic <- tibble::as_tibble(dic)
       }
-      if(!is_hdTibble(d)){
-        d <- hdTibble(d, dic)
+      if(!is_hdtibble(d)){
+        d <- hdtibble(d, dic)
       }
 
       self$name <- name
@@ -54,8 +54,8 @@ hdTableClass <- R6::R6Class(
 
       self$dic <- dic
       self$data <- d
-      self$hdTableType <- hdTableType(paste0(dic$hdType, collapse = "-"))
-      self$hdTableTypeGroup <- get_hdTableTypeGroup(hdTableType(dic$hdType))
+      self$hdtableType <- hdtableType(paste0(dic$hdtype, collapse = "-"))
+      self$hdtableTypeGroup <- get_hdtableTypeGroup(hdtableType(dic$hdtype))
 
       self$nrow <- nrow(self$data)
       self$ncol <- ncol(self$data)
@@ -80,8 +80,8 @@ hdTableClass <- R6::R6Class(
         description = self$description,
         slug = self$slug,
         formats = self$formats,
-        hdTableType = self$hdTableType,
-        hdTableTypeGroup = self$hdTableTypeGroup,
+        hdtableType = self$hdtableType,
+        hdtableTypeGroup = self$hdtableTypeGroup,
         nrow = self$nrow,
         ncol = self$ncol,
         credits = self$credits
@@ -93,7 +93,7 @@ hdTableClass <- R6::R6Class(
       if(!dir.exists(path)) dir.create(path, recursive = TRUE)
       save_path <- file.path(path,paste0(self$slug,".meta.json"))
       metadata <- self$metadata()
-      metadata$hdTableType <- as.character(metadata$hdTableType)
+      metadata$hdtableType <- as.character(metadata$hdtableType)
       jsonlite::write_json(metadata, save_path,
                            auto_unbox = TRUE, pretty = TRUE)
     },
@@ -142,7 +142,7 @@ hdTableClass <- R6::R6Class(
       # Save dic.json
       dic_path <- file.path(path,paste0(self$slug,".dic.json"))
       dic <- self$dic
-      dic$hdType <- as.character(dic$hdType)
+      dic$hdtype <- as.character(dic$hdtype)
       jsonlite::write_json(dic, dic_path, auto_unbox = TRUE, pretty = TRUE)
     },
     write_xlsx = function(path = ""){
@@ -151,13 +151,13 @@ hdTableClass <- R6::R6Class(
 
       d <- self$d()
       dic <- self$dic
-      dic$hdType <- NULL
+      dic$hdtype <- NULL
       dic$format <- NULL
       dic$stats <- NULL
 
       info <- self$metadata()
-      info$hdTableType <- NULL
-      info$hdTableTypeGroup <- NULL
+      info$hdtableType <- NULL
+      info$hdtableTypeGroup <- NULL
       info <- unlist(info)
       info <- data.frame(label = names(info), value = info)
       names(info) <- c("", "")
@@ -166,8 +166,6 @@ hdTableClass <- R6::R6Class(
       openxlsx::addWorksheet(wb, "Data")
       openxlsx::addWorksheet(wb, "Dictionary")
       openxlsx::addWorksheet(wb, "Info")
-
-      str(dic)
 
       openxlsx::writeDataTable(wb, 1, d)
       openxlsx::writeDataTable(wb, 2, dic)

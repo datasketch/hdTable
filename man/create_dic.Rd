@@ -4,15 +4,15 @@
 \alias{create_dic}
 \title{Dictionary}
 \usage{
-create_dic(d, hdTableType = NULL)
+create_dic(d, hdtableType = NULL)
 }
 \arguments{
 \item{d}{The data set for which the user is creating the dictionary for}
 
-\item{hdTableType}{pre-defined fringe types (check available_hdTypes() for the complete list)}
+\item{hdtableType}{pre-defined fringe types (check available_hdtypes() for the complete list)}
 }
 \value{
-a data frame with three columns: id, label and hdType
+a data frame with five columns: id, label, hdtype, format and stats
 }
 \description{
 \code{create_dic()} Creates a data.frame dictionary identifying column id (with cleaned variable names), label and homodatum variable type

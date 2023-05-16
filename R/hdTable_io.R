@@ -1,15 +1,15 @@
 
 
 #' @export
-hdTable_write <- function(hdtab, path = ""){
-  if(!is_hdTable(hdtab))
-    stop("hdtab is not a hdTable")
+hdtable_write <- function(hdtab, path = ""){
+  if(!is_hdtable(hdtab))
+    stop("hdtab is not a hdtable")
   hdtab$write(path)
 }
 
 
 #' @export
-hdTable_read <- function(path, slug = NULL){
+hdtable_read <- function(path, slug = NULL){
 
   metas <- list.files(path, pattern = "\\.meta\\.json")
   if(!is.null(slug)){
@@ -25,7 +25,7 @@ hdTable_read <- function(path, slug = NULL){
   slug <- meta_json$slug
 
   standard_fields <- c("name", "description", "slug", "formats",
-                       "hdTableType", "hdTableTypeGroup", "ncol", "nrow",
+                       "hdtableType", "hdtableTypeGroup", "ncol", "nrow",
                        "credits")
   additional_meta <- meta_json[!names(meta_json) %in% standard_fields]
 
@@ -44,7 +44,7 @@ hdTable_read <- function(path, slug = NULL){
   #
   # names(d) <- dic$label
 
-  hdTable(d, dic = dic,
+  hdtable(d, dic = dic,
          name = meta_json$name, description = meta_json$description,
          slug = meta_json$slug,
          meta = additional_meta)

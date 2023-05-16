@@ -1,11 +1,11 @@
-test_that("hdTable", {
+test_that("hdtable", {
 
   d <- cars
-  t1 <- hdTableClass$new(d)
+  t1 <- hdtableClass$new(d)
   t1$name
-  expect_true(inherits(t1, "hdTable"))
+  expect_true(inherits(t1, "hdtable"))
 
-  t2 <- hdTable(d)
+  t2 <- hdtable(d)
   t2$name
   expect_equal(t1$data,t2$data)
   expect_equal(t1$dic, t2$dic)
@@ -18,9 +18,9 @@ test_that("hdTable", {
     d = Num(runif(2)*10),
     e = Pct(runif(2))
   )
-  hdTable(d)
+  hdtable(d)
 
-  t <- hdTable(iris)
+  t <- hdtable(iris)
   t$name
 
 

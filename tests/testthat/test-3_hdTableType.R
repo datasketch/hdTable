@@ -1,30 +1,30 @@
-test_that("hdTableType", {
+test_that("hdtableType", {
 
-  hdTableType <- hdTableType("Num-Cat")
+  hdtableType <- hdtableType("Num-Cat")
 
-  expect_true(inherits(c(hdTableType("Num"), "Cat"),"hdTableType"))
+  expect_true(inherits(c(hdtableType("Num"), "Cat"),"hdtableType"))
 
-  y <- hdTableType("Cat")
-  expect_true(hdTableType("Cat") == y)
+  y <- hdtableType("Cat")
+  expect_true(hdtableType("Cat") == y)
 
   x <- c("Cat-Num-Cat")
-  fr <- hdTableType(x)
-  expect_equal(get_hdTableTypeGroup(fr), "Cat2-Num")
-  expect_equal(hdTableType_hdTypes(fr), hdType(c("Cat", "Num", "Cat")))
+  fr <- hdtableType(x)
+  expect_equal(get_hdtableTypeGroup(fr), "Cat2-Num")
+  expect_equal(hdtableType_hdtypes(fr), hdtype(c("Cat", "Num", "Cat")))
 
   x <- c("Cat-Num", "Cat-Num-Cat", "Cat")
-  fr <- hdTableType(x)
-  expect_equal(get_hdTableTypeGroup(fr), c("Cat-Num","Cat2-Num", "Cat"))
-  # With a vector of hdTableTypes, hdtypes become a list
-  expect_equal(hdTableType_hdTypes(fr),
+  fr <- hdtableType(x)
+  expect_equal(get_hdtableTypeGroup(fr), c("Cat-Num","Cat2-Num", "Cat"))
+  # With a vector of hdtableTypes, hdtypes become a list
+  expect_equal(hdtableType_hdtypes(fr),
                list(
-                 hdType(c("Cat", "Num")),
-                 hdType(c("Cat", "Num", "Cat")),
-                 hdType("Cat")
+                 hdtype(c("Cat", "Num")),
+                 hdtype(c("Cat", "Num", "Cat")),
+                 hdtype("Cat")
                ))
   f1 <- fr[1]
-  get_hdTableTypeGroup(f1)
-  get_hdTableTypeGroup(f1)
+  get_hdtableTypeGroup(f1)
+  get_hdtableTypeGroup(f1)
 
 
 })

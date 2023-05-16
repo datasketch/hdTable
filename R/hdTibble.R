@@ -3,20 +3,20 @@
 
 
 #' @export
-is_hdTibble <- function(d){
-  all(purrr::map_lgl(d, hdTypes::is_any_hdType))
+is_hdtibble <- function(d){
+  all(purrr::map_lgl(d, hdtype::is_any_hdtype))
 }
 
 #' @export
-hdTibble <- function(d, dic = NULL){
+hdtibble <- function(d, dic = NULL){
 
-  if(is_hdTibble(d)) return(d)
+  if(is_hdtibble(d)) return(d)
   if(is.null(dic)){
     dic <- create_dic(d)
   }
 
 
-  hdts <- dic$hdType
+  hdts <- dic$hdtype
   hdts_str <- as.character(hdts)
 
   d <- as.data.frame(d)
@@ -33,15 +33,15 @@ hdTibble <- function(d, dic = NULL){
 
 
 
-hdTibble_frType <- function(d){
-  frType(hdType(purrr::map_chr(d, which_hdType)))
+hdtibble_frType <- function(d){
+  frType(hdtype(purrr::map_chr(d, which_hdtype)))
 }
 
 
 
 #' @export
-hdTibble_hdTypes <- function(d){
-  hdType(purrr::map_chr(d, which_hdType))
+hdtibble_hdtypes <- function(d){
+  hdtype(purrr::map_chr(d, which_hdtype))
 }
 
 

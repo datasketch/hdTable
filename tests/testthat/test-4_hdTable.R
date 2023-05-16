@@ -1,41 +1,41 @@
-test_that("hdTable", {
+test_that("hdtable", {
 
-  d <- hdTable(NULL)
+  d <- hdtable(NULL)
   expect_null(d$data)
   expect_null(d$dic)
 
 
-  # NA hdTables
+  # NA hdtables
   d <- data.frame(x = NA)
   dic <- create_dic(data.frame(x = NA))
-  dd <- hdTibble(d, dic = dic)
+  dd <- hdtibble(d, dic = dic)
   expect_equal(UKT(d$x), dd$x)
   #expect_equal(as.logical(dd$x), NA) # Casting to logical not working
 
   d <- data.frame(x = NA)
   dic <- create_dic(d)
-  hdTibble(d, dic)
-  hdtab <- hdTable(d)
+  hdtibble(d, dic)
+  hdtab <- hdtable(d)
 
   hdtab$stats
 
-  f <- hdTable(cars)
+  f <- hdtable(cars)
   length(f) # 13 ----> fields in the class
 
-  fr <- hdTable(cars)
+  fr <- hdtable(cars)
   expect_equal(f$data, fr$data)
   expect_equal(f$dic, fr$dic)
   # expect_equal(f$frtype, fr$frtype) ### TODO
   expect_equal(f$group, fr$group)
 
-  f2 <- list(hdTable(mtcars), hdTable(cars))
-  expect_true(inherits(hdTable(cars),"hdTable"))
+  f2 <- list(hdtable(mtcars), hdtable(cars))
+  expect_true(inherits(hdtable(cars),"hdtable"))
 
 
   d <- sample_data("Cat-Dat-Num-Pct", n = 11,
                   names = c("Category", "Dates", "Numbers","Percentages"))
   names(d)
-  f <- hdTable(d)
+  f <- hdtable(d)
   expect_equal(d, f$data)
 
   names(d) <- dstools::create_slug(names(d))
@@ -47,72 +47,72 @@ test_that("hdTable", {
 
 })
 
-test_that("hdTable creation with dictionaries work",{
+test_that("hdtable creation with dictionaries work",{
 
   d <- cars
   names(d) <- c("a", "b")
   dic <- data.frame(label = c("speed", "dist"),
                     id = c("speed", "dist"),
                     description = c("SPEED", "DIST"),
-                    hdType = c("Num", "Num"))
-  f <- hdTable(d, dic = dic)
-  expect_equal(hdTable_d(f), d, ignore_attr = TRUE)
+                    hdtype = c("Num", "Num"))
+  f <- hdtable(d, dic = dic)
+  expect_equal(hdtable_d(f), d, ignore_attr = TRUE)
   expect_equal(f$dic$description, dic$description)
 
   dic <- data.frame(label = c("Speed", "Dist"),
                     id = c("speed", "dist"),
-                    hdType = c("Num", "Cat"),
+                    hdtype = c("Num", "Cat"),
                     stringsAsFactors = FALSE)
-  f2 <- hdTable(d, dic = dic)
-  expect_equivalent(hdTable_d(f2)[[2]], as.character(cars[[2]]))
-  expect_equivalent(names(hdTable_data(f2)), dic$id)
-  expect_equivalent(names(hdTable_data(f2, labels =TRUE)), dic$label)
+  f2 <- hdtable(d, dic = dic)
+  expect_equivalent(hdtable_d(f2)[[2]], as.character(cars[[2]]))
+  expect_equivalent(names(hdtable_data(f2)), dic$id)
+  expect_equivalent(names(hdtable_data(f2, labels =TRUE)), dic$label)
 
   dic <- data.frame(label = c("speed", "dist"),
                     id = c("speed", "dist"),
                     description = c("SPEED", "DIST"))
-  f3 <- hdTable(d, dic = dic)
+  f3 <- hdtable(d, dic = dic)
   expect_equal(f3, f)
 
-  #expect_equal(as.character(f3$hdTableTypeGroup), hdTableType(f3))
+  #expect_equal(as.character(f3$hdtableTypeGroup), hdtableType(f3))
 
 })
 
 
 
-test_that("hdTable dictionaries are correct",{
+test_that("hdtable dictionaries are correct",{
 
-  f <- sample_hdTable("Cat-Dat-Num-Pct", n = 11,
+  f <- sample_hdtable("Cat-Dat-Num-Pct", n = 11,
                      names = c("Category", "Dates", "Numbers","Percentages"))
   f$data
   f$d()
 
-  dd <- hdTable_d(f)
+  dd <- hdtable_d(f)
   nms <- dstools::create_slug(c("Category", "Dates", "Numbers","Percentages"))
   expect_equal(names(dd), nms)
   expect_equal(purrr::map_chr(dd, class),
                c("category" = "character", "dates" = "Date",
                  "numbers" = "numeric", "percentages" = "numeric"))
-  expect_true(all(!purrr::map_lgl(dd, is_hdType)))
+  expect_true(all(!purrr::map_lgl(dd, is_hdtype)))
 
 
-  # New hdTable with dic
+  # New hdtable with dic
 
   data <- data.frame(book = c("Black", "Red"),
                      value = 1:2,
                      dates = c("28/04/2019", "4/12/2018"))
   dic <- data.frame(id = names(data),
-                    hdType = c("Cat","Num","Dat"))
-  f <- hdTable(data, dic = dic)
+                    hdtype = c("Cat","Num","Dat"))
+  f <- hdtable(data, dic = dic)
 
   expect_equal(dic$id, f$dic$id)
-  expect_equivalent(hdType(dic$hdType), f$dic$hdType)
+  expect_equivalent(hdtype(dic$hdtype), f$dic$hdtype)
 
-  f_data <- hdTable_data(f)
+  f_data <- hdtable_data(f)
   expect_false("hd_tbl" %in% class(f_data))
 
-  f_hdTibble <- hdTable_hdTibble(f)
-  expect_true("hd_tbl" %in% class(f_hdTibble))
+  f_hdtibble <- hdtable_hdtibble(f)
+  expect_true("hd_tbl" %in% class(f_hdtibble))
 
   #
 
@@ -124,51 +124,51 @@ test_that("hdTable dictionaries are correct",{
     e = Pct(runif(2))
   )
   class(data)
-  f <- hdTable(data)
-  f_data <- hdTable_data(f)
+  f <- hdtable(data)
+  f_data <- hdtable_data(f)
 
   expect_false("hd_tbl" %in% class(f_data))
 
-  f_hdTibble <- hdTable_hdTibble(f)
-  expect_true("hd_tbl" %in% class(f_hdTibble))
+  f_hdtibble <- hdtable_hdtibble(f)
+  expect_true("hd_tbl" %in% class(f_hdtibble))
 
 })
 
 
 
-test_that("hdTable dictionaries have format",{
+test_that("hdtable dictionaries have format",{
 
-  f <- sample_hdTable("Cat-Dat-Num-Pct", n = 11,
+  f <- sample_hdtable("Cat-Dat-Num-Pct", n = 11,
                       names = c("Category", "Dates", "Numbers","Percentages"))
 
   f$dic
 
-  dd <- hdTable_d(f)
+  dd <- hdtable_d(f)
   nms <- dstools::create_slug(c("Category", "Dates", "Numbers","Percentages"))
   expect_equal(names(dd), nms)
   expect_equal(purrr::map_chr(dd, class),
                c("category" = "character", "dates" = "Date",
                  "numbers" = "numeric", "percentages" = "numeric"))
-  expect_true(all(!purrr::map_lgl(dd, is_hdType)))
+  expect_true(all(!purrr::map_lgl(dd, is_hdtype)))
 
 
-  # New hdTable with dic
+  # New hdtable with dic
 
   data <- data.frame(book = c("Black", "Red"),
                      value = 1:2,
                      dates = c("28/04/2019", "4/12/2018"))
   dic <- data.frame(id = names(data),
-                    hdType = c("Cat","Num","Dat"))
-  f <- hdTable(data, dic = dic)
+                    hdtype = c("Cat","Num","Dat"))
+  f <- hdtable(data, dic = dic)
 
   expect_equal(dic$id, f$dic$id)
-  expect_equivalent(hdType(dic$hdType), f$dic$hdType)
+  expect_equivalent(hdtype(dic$hdtype), f$dic$hdtype)
 
-  f_data <- hdTable_data(f)
+  f_data <- hdtable_data(f)
   expect_false("hd_tbl" %in% class(f_data))
 
-  f_hdTibble <- hdTable_hdTibble(f)
-  expect_true("hd_tbl" %in% class(f_hdTibble))
+  f_hdtibble <- hdtable_hdtibble(f)
+  expect_true("hd_tbl" %in% class(f_hdtibble))
 
   #
 
@@ -180,28 +180,28 @@ test_that("hdTable dictionaries have format",{
     e = Pct(runif(2))
   )
   class(data)
-  f <- hdTable(data)
-  f_data <- hdTable_data(f)
+  f <- hdtable(data)
+  f_data <- hdtable_data(f)
 
   expect_false("hd_tbl" %in% class(f_data))
 
-  f_hdTibble <- hdTable_hdTibble(f)
-  expect_true("hd_tbl" %in% class(f_hdTibble))
+  f_hdtibble <- hdtable_hdtibble(f)
+  expect_true("hd_tbl" %in% class(f_hdtibble))
 
 })
 
 
 
 
-test_that("hdTable with metadata", {
+test_that("hdtable with metadata", {
 
   d <- tibble::tibble("Helloo X" = 1, "x 43" = as.Date("2020-04-21"))
-  hdtab <- hdTable(d, name = "Los Carros", mas = "fda")
+  hdtab <- hdtable(d, name = "Los Carros", mas = "fda")
   expect_equal(hdtab$formats, c("csv", "json"))
 
 
   d <- tibble::tibble("Helloo X" = 1, "x 43" = as.Date("2020-04-21"))
-  hdtab <- hdTable(d, name = "Los Carros", mas = "fda", formats = "xlsx")
+  hdtab <- hdtable(d, name = "Los Carros", mas = "fda", formats = "xlsx")
   expect_true(hdtab$meta$mas == "fda")
   expect_true(hdtab$slug == "los-carros")
   expect_equal(hdtab$formats, c("csv", "json", "xlsx"))
@@ -210,25 +210,25 @@ test_that("hdTable with metadata", {
 
 
 
-  f0 <- hdTable(mtcars, name = "Mtcars", access = "private")
+  f0 <- hdtable(mtcars, name = "Mtcars", access = "private")
   expect_equal(f0$name, "Mtcars")
 
-  f1 <- hdTable_update_meta(f0, name = "MTCARS 2")
+  f1 <- hdtable_update_meta(f0, name = "MTCARS 2")
 
-  is_hdTable(f1)
+  is_hdtable(f1)
 
   expect_equal(f1$name, "MTCARS 2")
   expect_equal(f1$slug, "mtcars")
   expect_equal(f1$meta$access, "private")
   expect_equal(f1$meta$access, "private")
 
-  f2 <- hdTable_update_meta(f1, name = "Mtcars", slug="new_mtcars")
-  f3 <- hdTable_update_meta(f0, slug = "new_mtcars")
+  f2 <- hdtable_update_meta(f1, name = "Mtcars", slug="new_mtcars")
+  f3 <- hdtable_update_meta(f0, slug = "new_mtcars")
   expect_equal(f3, f2)
 
   sources <- list(title = "source name", path = "url-of-source")
 
-  f4 <- hdTable(mtcars, sources = sources, license = "MIT")
+  f4 <- hdtable(mtcars, sources = sources, license = "MIT")
 
   expect_equal(f4$meta$sources, sources)
   expect_equal(f4$meta$license, "MIT")
@@ -237,7 +237,7 @@ test_that("hdTable with metadata", {
   sources_update[[1]] <- sources
   sources_update[[2]] <- list(title = "another source", path = "url-of-source")
 
-  f5 <- hdTable_update_meta(f4, name = "this data",
+  f5 <- hdtable_update_meta(f4, name = "this data",
                             sources = sources_update,
                             more = "Más info")
   f5$meta

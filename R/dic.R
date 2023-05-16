@@ -4,30 +4,30 @@
 #' @description `create_dic()` Creates a data.frame dictionary identifying column id (with cleaned variable names), label and homodatum variable type
 #'
 #' @param d The data set for which the user is creating the dictionary for
-#' @param hdTableType pre-defined fringe types (check available_hdTypes() for the complete list)
+#' @param hdtableType pre-defined fringe types (check available_hdtypes() for the complete list)
 #'
-#' @return a data frame with five columns: id, label, hdType, format and stats
+#' @return a data frame with five columns: id, label, hdtype, format and stats
 #' @export
 #'
 #' @examples
 #' d <- mtcars
 #' new_dic <- create_dic(d)
-create_dic <- function(d, hdTableType = NULL){
+create_dic <- function(d, hdtableType = NULL){
   if(is.null(d)) return()
 
-  if(is.null(hdTableType)){
-    if(is_hdTable(d)){
-      hdTableType <- hdTable_hdTableType(d)
+  if(is.null(hdtableType)){
+    if(is_hdtable(d)){
+      hdtableType <- hdtable_hdtableType(d)
     }else{
-      hdTableType <- guess_hdTableType(d)
+      hdtableType <- guess_hdtableType(d)
     }
   }
-  if(!is_hdTableType(hdTableType))
-    hdTableType <- hdTableType(hdTableType)
+  if(!is_hdtableType(hdtableType))
+    hdtableType <- hdtableType(hdtableType)
   ids <- col_ids_from_name(names(d))
 
   dic <-tibble::tibble(id = ids, label = names(d),
-                       hdType = hdTableType_hdTypes(hdTableType))
+                       hdtype = hdtableType_hdtypes(hdtableType))
 
   dic <- update_dic(dic, d)
 
@@ -43,7 +43,7 @@ create_dic <- function(d, hdTableType = NULL){
 #' @param dic The original dictionary
 #' @param d The data set for which the user is creating the dictionary for
 #'
-#' @return a data frame with five columns: id, label, hdType, format and stats
+#' @return a data frame with five columns: id, label, hdtype, format and stats
 #' @export
 #'
 #' @examples
@@ -69,10 +69,10 @@ update_dic <- function(dic, d){
 get_fields <- function(d, dic, what = "format"){
   # what can by 'format' or 'stats'
   names(d) <- dic$id
-  d <- hdTibble(d, dic = dic)
+  d <- hdtibble(d, dic = dic)
 
-  purrr::map2(d, dic$hdType, function(field, hdType){
-    fun_str <- paste0("hdTypes::",hdType, "_", what)
+  purrr::map2(d, dic$hdtype, function(field, hdtype){
+    fun_str <- paste0("hdtype::",hdtype, "_", what)
     do.call(getfun(fun_str), list(field))
   })
 

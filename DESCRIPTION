@@ -1,4 +1,4 @@
-Package: hdTable
+Package: hdtable
 Title: Homodatum Table
 Version: 0.0.1
 Authors@R: 
@@ -7,15 +7,15 @@ Authors@R:
            role = c("aut", "cre"),
            email = "jpmarindiaz@gmail.com")
 Description: Vector definitions for abstract data types
-URL: https://github.com/datasketch/hdTable
+URL: https://github.com/datasketch/hdtable
 License: MIT + file LICENSE
 Encoding: UTF-8
-BugReports: https://github.com/datasketch/hdTable/issues
+BugReports: https://github.com/datasketch/hdtable/issues
 Depends:
     R (>= 4.2),
     vctrs
 Imports: 
-    hdTypes,
+    hdtype,
     R6,
     tibble,
     dplyr,
