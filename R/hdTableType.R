@@ -1,40 +1,40 @@
 
-new_hdtableType <- function(x = character()){
+new_hdtable_type <- function(x = character()){
   vctrs::vec_assert(x, character())
   if(length(x)>1){
     hdtypes <- lapply(strsplit(x, "-", fixed = TRUE), hdtype)
-    group <- get_hdtableTypeGroup(x)
+    group <- get_hdtable_type_group(x)
   } else if (length(x) == 1){
     hdtypes <- hdtype(strsplit(x, "-", fixed = TRUE)[[1]])
-    group <- get_hdtableTypeGroup(x)
+    group <- get_hdtable_type_group(x)
   } else {
     hdtypes <- hdtype()
     group <- NULL
   }
-  vctrs::new_vctr(x, hdtypes = hdtypes, group = group, class = "hdtableType")
+  vctrs::new_vctr(x, hdtypes = hdtypes, group = group, class = "hdtable_type")
 }
 
-#' @title hdtableType Vectors
+#' @title hdtable_type Vectors
 #'
-#' @description a grouped way of reading hdtableTypes values
+#' @description a grouped way of reading hdtable_types values
 #'
-#' @param hdtableType_str a string value showing a grouped hdtableTypes view
+#' @param hdtable_type_str a string value showing a grouped hdtable_types view
 #'
-#' @return a grouped view of given hdtableTypes values
+#' @return a grouped view of given hdtable_types values
 #'
 #' @examples
 #'
 #' x <- c("Cat-Num-Cat")
-#' fr <- hdtableType(x)
-#' get_hdtableTypeGroup(fr)
+#' fr <- hdtable_type(x)
+#' get_hdtable_type_group(fr)
 
 #'
 #' @export
-get_hdtableTypeGroup <- function(hdtableType_str){
+get_hdtable_type_group <- function(hdtable_type_str){
 
-  if(is.null(hdtableType_str)) return()
+  if(is.null(hdtable_type_str)) return()
 
-  ctps <- strsplit(hdtableType_str,"-")
+  ctps <- strsplit(hdtable_type_str,"-")
   f <- function(hdtypes){
     ct <- dplyr::count(tibble::tibble(hdtypes = hdtypes),hdtypes)
     ct$n[ct$n == 1] <- ""
@@ -46,24 +46,24 @@ get_hdtableTypeGroup <- function(hdtableType_str){
 
 
 
-#' @title hdtableType Vectors
+#' @title hdtable_type Vectors
 #'
-#' @description Reverses the effect of [get_hdtableTypeGroup()] and split every single hdtableType from an object.
+#' @description Reverses the effect of [get_hdtable_type_group()] and split every single hdtable_type from an object.
 #'
-#' @param hdtableTypeGroup a grouped hdtableType object
+#' @param hdtable_type_group a grouped hdtable_type object
 #'
-#' @return a string value showing all the hdtableType values of an object
+#' @return a string value showing all the hdtable_type values of an object
 #'
 #' @examples
 #'
 #' x <- c("Cat-Num-Cat")
-#' fr <- hdtableType(x)
-#' grouped_fr <- get_hdtableTypeGroup(fr)
+#' fr <- hdtable_type(x)
+#' grouped_fr <- get_hdtable_type_group(fr)
 #' expand_frGroup(grouped_fr)
 #'
 #' @export
-expand_hdtableTypeGroup <- function(hdtableTypeGroup){
-  ft1 <- strsplit(hdtableTypeGroup,"-",fixed = TRUE)[[1]]
+expand_hdtable_type_group <- function(hdtable_type_group){
+  ft1 <- strsplit(hdtable_type_group,"-",fixed = TRUE)[[1]]
   cts <- substring(ft1,1,3)
   reps <- substring(ft1,4)
   purrr::flatten_chr(purrr::map2(cts,reps,function(x,y){
@@ -76,20 +76,20 @@ expand_hdtableTypeGroup <- function(hdtableTypeGroup){
 }
 
 
-#' @title hdtableType Vectors
+#' @title hdtable_type Vectors
 #'
-#' @description Creates or coerces objects of type "hdtableType"
+#' @description Creates or coerces objects of type "hdtable_type"
 #'
 #' @param x object to be created or coerced
 #'
-#' @return returns a hdtableType value
+#' @return returns a hdtable_type value
 #'
 #' @examples
 #'
-#' hdtableType("Cat")
+#' hdtable_type("Cat")
 #'
 #' @export
-hdtableType <- function(x = character()) {
+hdtable_type <- function(x = character()) {
   if(is.null(x)) return()
   if(is_hdtype(x)){
     # x <- vctrs::vec_cast(x, character()) # Not working!
@@ -97,80 +97,80 @@ hdtableType <- function(x = character()) {
     x <- paste(x, collapse = "-")
   }
   x <- vctrs::vec_cast(x, character())
-  new_hdtableType(x)
+  new_hdtable_type(x)
 }
 
 
 
-#' @title hdtableType Vectors
+#' @title hdtable_type Vectors
 #'
-#' @description Creates or test for objects of type "hdtableType"
+#' @description Creates or test for objects of type "hdtable_type"
 #'
 #' @param x object to be coerced or tested
 #'
-#' @return returns TRUE or FALSE depending on whether its argument is of type hdtableType or not.
+#' @return returns TRUE or FALSE depending on whether its argument is of type hdtable_type or not.
 #'
 #' @examples
 #'
-#' value <- hdtableType("Cat")
-#' is_hdtableType(value)
+#' value <- hdtable_type("Cat")
+#' is_hdtable_type(value)
 #'
 #' @export
-is_hdtableType <- function(x) {
-  inherits(x, "hdtableType")
+is_hdtable_type <- function(x) {
+  inherits(x, "hdtable_type")
 }
 
 
-#' @title hdtableType Vectors
+#' @title hdtable_type Vectors
 #'
-#' @description coerces its argument to a hdtableType. It is an abbreviated form of hdtableType.
+#' @description coerces its argument to a hdtable_type. It is an abbreviated form of hdtable_type.
 #'
 #' @param x object to be coerced
 #'
-#' @return attempts to coerce its argument to hdtableType type
+#' @return attempts to coerce its argument to hdtable_type type
 #'
 #' @examples
 #'
 #' some_chr_value <- "Cat"
 #' class(some_chr_value)
 #'
-#' some_frt_value <- as_hdtableType(some_chr_value)
+#' some_frt_value <- as_hdtable_type(some_chr_value)
 #' class(some_frt_value)
 #'
 #' @export
-as_hdtableType <- function(x) {
-  vctrs::vec_cast(x, new_hdtableType())
+as_hdtable_type <- function(x) {
+  vctrs::vec_cast(x, new_hdtable_type())
 }
 
 
 
 
-# hdtableType_group <- function(x){
-#   if(!is_hdtableType(x)) stop("x must be a hdtableType")
+# hdtable_type_group <- function(x){
+#   if(!is_hdtable_type(x)) stop("x must be a hdtable_type")
 #   attr(x, "group")
 # }
 
 
 
-#' @title hdtableType Vectors
+#' @title hdtable_type Vectors
 #'
-#' @description convert hdtableTypes value(s) into hdtype
+#' @description convert hdtable_types value(s) into hdtype
 #'
-#' @param x an available hdtableType value
+#' @param x an available hdtable_type value
 #'
 #' @return an hdtype value
 #'
 #' @examples
 #'
-#' x <- hdtableType("Cat")
+#' x <- hdtable_type("Cat")
 #' class(x)
 #'
-#' x_hdt <- hdtableType_hdtypes(x)
+#' x_hdt <- hdtable_type_hdtypes(x)
 #' class(x_hdt)
 #'
 #' @export
-hdtableType_hdtypes <- function(x, chr = FALSE){
-  if(!is_hdtableType(x)) stop("x must be a hdtableType")
+hdtable_type_hdtypes <- function(x, chr = FALSE){
+  if(!is_hdtable_type(x)) stop("x must be a hdtable_type")
   hdt <- attr(x, "hdtypes")
   if(chr) hdt <- as.character(hdt)
   hdt
@@ -178,26 +178,26 @@ hdtableType_hdtypes <- function(x, chr = FALSE){
 
 
 
-#' @title hdtableType Vectors
+#' @title hdtable_type Vectors
 #'
-#' @description convert hdtableTypes value(s) into character
+#' @description convert hdtable_types value(s) into character
 #'
-#' @param x an available hdtableType value, hdtableType dataframe or hd_tbl dataframe
+#' @param x an available hdtable_type value, hdtable_type dataframe or hd_tbl dataframe
 #'
 #' @return a character value
 #'
 #' @examples
 #'
-#' x <- hdtableType("Cat")
+#' x <- hdtable_type("Cat")
 #' class(x)
 #'
-#' x_chr <- hdtableType_str(x)
+#' x_chr <- hdtable_type_str(x)
 #' class(x_chr)
 #'
 #' @export
-hdtableType_str <- function(x){
-  if(is_hdtableType(x)){
-    return(paste(vctrs::vec_data(hdtableType_hdtypes(x)),collapse = "-"))
+hdtable_type_str <- function(x){
+  if(is_hdtable_type(x)){
+    return(paste(vctrs::vec_data(hdtable_type_hdtypes(x)),collapse = "-"))
   }
   if("data.frame" %in% class(x) || "hd_tbl" %in% class(x)){
     return(paste0(purrr::map_chr(x, hdtype::which_hdtype), collapse = "-"))
@@ -213,64 +213,64 @@ hdtableType_str <- function(x){
 ## Format method
 
 #' @export
-format.hdtableType <- function(x, ...) {
+format.hdtable_type <- function(x, ...) {
   sprintf(fmt = "%s", x)
 }
 
 #' @export
-vec_ptype_abbr.hdtableType <- function(x, ...) {
-  "hdtableType"
+vec_ptype_abbr.hdtable_type <- function(x, ...) {
+  "hdtable_type"
 }
 
 # Coercion
 
-#' @method vec_ptype2 hdtableType
+#' @method vec_ptype2 hdtable_type
 #' @export
-vec_ptype2.hdtableType <- function(x, y, ...) UseMethod("vec_ptype2.hdtableType", y)
+vec_ptype2.hdtable_type <- function(x, y, ...) UseMethod("vec_ptype2.hdtable_type", y)
 
-#' @method vec_ptype2.hdtableType default
+#' @method vec_ptype2.hdtable_type default
 #' @export
-vec_ptype2.hdtableType.default <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+vec_ptype2.hdtable_type.default <- function(x, y, ..., x_arg = "x", y_arg = "y") {
   vec_default_ptype2(x, y, x_arg = x_arg, y_arg = y_arg)
 }
-# A hdtableType combined with a hdtableType returns a hdtableType
+# A hdtable_type combined with a hdtable_type returns a hdtable_type
 
-#' @method vec_ptype2.hdtableType hdtableType
+#' @method vec_ptype2.hdtable_type hdtable_type
 #' @export
-vec_ptype2.hdtableType.hdtableType <- function(x, y, ...) new_hdtableType()
+vec_ptype2.hdtable_type.hdtable_type <- function(x, y, ...) new_hdtable_type()
 
-# # hdtableType and character return double
+# # hdtable_type and character return double
 
-#' @method vec_ptype2.hdtableType character
+#' @method vec_ptype2.hdtable_type character
 #' @export
-vec_ptype2.hdtableType.character <- function(x, y, ...) hdtableType()
+vec_ptype2.hdtable_type.character <- function(x, y, ...) hdtable_type()
 
-#' @method vec_ptype2.character hdtableType
+#' @method vec_ptype2.character hdtable_type
 #' @export
-vec_ptype2.character.hdtableType <- function(x, y, ...) hdtableType()
+vec_ptype2.character.hdtable_type <- function(x, y, ...) hdtable_type()
 
 # Casting
 
-#' @method vec_cast hdtableType
+#' @method vec_cast hdtable_type
 #' @export
-vec_cast.hdtableType <- function(x, to, ...) UseMethod("vec_cast.hdtableType")
+vec_cast.hdtable_type <- function(x, to, ...) UseMethod("vec_cast.hdtable_type")
 
-#' @method vec_cast.hdtableType default
+#' @method vec_cast.hdtable_type default
 #' @export
-vec_cast.hdtableType.default <- function(x, to, ...) vec_default_cast(x, to)
-# Coerce hdtableType to hdtableType
+vec_cast.hdtable_type.default <- function(x, to, ...) vec_default_cast(x, to)
+# Coerce hdtable_type to hdtable_type
 
-#' @method vec_cast.hdtableType hdtableType
+#' @method vec_cast.hdtable_type hdtable_type
 #' @export
-vec_cast.hdtableType.hdtableType <- function(x, to, ...) x
+vec_cast.hdtable_type.hdtable_type <- function(x, to, ...) x
 
-#' @method vec_cast.hdtableType character
+#' @method vec_cast.hdtable_type character
 #' @export
-vec_cast.hdtableType.character <- function(x, to, ...) hdtableType(x)
+vec_cast.hdtable_type.character <- function(x, to, ...) hdtable_type(x)
 
-#' @method vec_cast.character hdtableType
+#' @method vec_cast.character hdtable_type
 #' @export
-vec_cast.character.hdtableType <- function(x, to, ...) vctrs::vec_data(x)
+vec_cast.character.hdtable_type <- function(x, to, ...) vctrs::vec_data(x)
 
 
 

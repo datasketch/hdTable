@@ -4,12 +4,12 @@
 \alias{create_dic}
 \title{Dictionary}
 \usage{
-create_dic(d, hdtableType = NULL)
+create_dic(d, hdtable_type = NULL)
 }
 \arguments{
 \item{d}{The data set for which the user is creating the dictionary for}
 
-\item{hdtableType}{pre-defined fringe types (check available_hdtypes() for the complete list)}
+\item{hdtable_type}{pre-defined fringe types (check available_hdtypes() for the complete list)}
 }
 \value{
 a data frame with five columns: id, label, hdtype, format and stats

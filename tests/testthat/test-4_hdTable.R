@@ -74,7 +74,7 @@ test_that("hdtable creation with dictionaries work",{
   f3 <- hdtable(d, dic = dic)
   expect_equal(f3, f)
 
-  #expect_equal(as.character(f3$hdtableTypeGroup), hdtableType(f3))
+  #expect_equal(as.character(f3$hdtable_type_group), hdtable_type(f3))
 
 })
 

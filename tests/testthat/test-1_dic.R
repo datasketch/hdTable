@@ -3,13 +3,13 @@ test_that("dic",{
   d <- mtcars
   new_dic <- create_dic(d)
 
-  expect_equal(new_dic$hdtype, hdtableType_hdtypes(guess_hdtableType(d)))
+  expect_equal(new_dic$hdtype, hdtable_type_hdtypes(guess_hdtable_type(d)))
 
   expect_true(class(new_dic$format) == "list")
   expect_true(class(new_dic$stats) == "list")
 
   d <- cars
-  new_dic <- create_dic(d, hdtableType = "Num-Num")
+  new_dic <- create_dic(d, hdtable_type = "Num-Num")
   expect_equal(new_dic$hdtype, hdtype(c("Num", "Num")))
 
   d <- sample_data("Cat-Num")

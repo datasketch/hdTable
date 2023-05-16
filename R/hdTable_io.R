@@ -25,7 +25,7 @@ hdtable_read <- function(path, slug = NULL){
   slug <- meta_json$slug
 
   standard_fields <- c("name", "description", "slug", "formats",
-                       "hdtableType", "hdtableTypeGroup", "ncol", "nrow",
+                       "hdtable_type", "hdtable_type_group", "ncol", "nrow",
                        "credits")
   additional_meta <- meta_json[!names(meta_json) %in% standard_fields]
 

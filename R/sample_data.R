@@ -18,11 +18,11 @@ sample_data <- function(frtype, n = 20, loremNames = TRUE,
   # arg <- list(n = 5, loremNames = FALSE, addNA = FALSE, names = NULL)
   # frtype <- "Cat-Num-Pct-Gnm-Dat"
   # frtype <- "Cat-Num-Pct-Dat"
-  if(!is_hdtableType(frtype)){
-    frtype <- hdtableType(frtype)
+  if(!is_hdtable_type(frtype)){
+    frtype <- hdtable_type(frtype)
   }
 
-  hdtypes <- hdtableType_hdtypes(frtype)
+  hdtypes <- hdtable_type_hdtypes(frtype)
 
   sample_funs <- paste0("sample",hdtypes)
 
@@ -48,8 +48,8 @@ sample_data <- function(frtype, n = 20, loremNames = TRUE,
 }
 
 #' @export
-sample_hdtable <- function(hdtableType, ...){
-  d <- sample_data(hdtableType,...)
+sample_hdtable <- function(hdtable_type, ...){
+  d <- sample_data(hdtable_type,...)
   hdtable(d)
 }
 

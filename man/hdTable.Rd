@@ -7,7 +7,7 @@
 hdtable(
   d,
   dic = NULL,
-  hdtableType = NULL,
+  hdtable_type = NULL,
   name = NULL,
   description = NULL,
   slug = NULL,
@@ -19,7 +19,7 @@ hdtable(
 \arguments{
 \item{dic}{a custom variable dictionary can be added. \code{\link[=create_dic]{create_dic()}} can help you with that.}
 
-\item{hdtableType}{The type of hdtable to create}
+\item{hdtable_type}{The type of hdtable to create}
 
 \item{name}{a custom name can be added}
 
@@ -39,8 +39,8 @@ Create a hdtable object from a data frame. The main value of a hdtable is its me
 \itemize{
 \item data: original data frame data. When it is created, the hdtable will convert original variable R types onto homodatum ones (Num, Cat, Pct, etc. -see \code{\link[=available_hdtypes]{available_hdtypes()}})
 \item dic: A diccionary is created with three variable characteristics: id, label and hdtype
-\item hdtableType: Shows all variable types based in homodatum schema
-\item group: A grouped view of hdtableType
+\item hdtable_type: Shows all variable types based in homodatum schema
+\item group: A grouped view of hdtable_type
 \item name: Name for the hdtable data frame, setted on \emph{name} argument
 \item description: Description for the hdtable data frame, setted on \emph{description} argument
 \item slug: a custom slug can be added
@@ -48,6 +48,6 @@ Create a hdtable object from a data frame. The main value of a hdtable is its me
 }
 }
 \examples{
-hdtable(mtcars, hdtableType = "Num", name = "MTCars")
+hdtable(mtcars, hdtable_type = "Num", name = "MTCars")
 
 }

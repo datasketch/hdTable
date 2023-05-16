@@ -26,7 +26,7 @@ test_that("Sample Column",{
   frtype <- "Cat-Dat"
   d <- sample_data(frtype)
   d
-  frtype <- guess_hdtableType(d)
+  frtype <- guess_hdtable_type(d)
   # forceCtypes(d, ctypes)
 
 
@@ -40,10 +40,10 @@ test_that("Sample Data", {
 
 
 
-  fr <- guess_hdtableType(t)
-  expect_equal(hdtableType_str(fr),"Cat-Num")
+  fr <- guess_hdtable_type(t)
+  expect_equal(hdtable_type_str(fr),"Cat-Num")
 
-  expect_equal(guess_hdtableType(t, as_string = TRUE),c("Cat-Num"))
+  expect_equal(guess_hdtable_type(t, as_string = TRUE),c("Cat-Num"))
 
     # t <- sample_data("Uid-Cat-Num-___")
   # sample_data("Uid-Cat-Num-___-Img")

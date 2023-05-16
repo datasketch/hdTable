@@ -3,13 +3,13 @@ hdtableClass <- R6::R6Class(
   "hdtable",
   public = list(
     dic = NULL,
-    hdtableType = NULL,
+    hdtable_type = NULL,
     name = NULL,
     slug = NULL,
     description = NULL,
     formats = NULL,
     meta = NULL,
-    hdtableTypeGroup = NULL,
+    hdtable_type_group = NULL,
     data = NULL,
     field_stats = NULL,
     nrow = NULL,
@@ -18,7 +18,7 @@ hdtableClass <- R6::R6Class(
     preview_max_ncol = NULL,
     credits = NULL,
 
-    initialize = function(d, dic = NULL, hdtableType = NULL,
+    initialize = function(d, dic = NULL, hdtable_type = NULL,
                           name = NULL, description = NULL,
                           slug = NULL, meta = NULL,
                           formats =  NULL,
@@ -32,9 +32,9 @@ hdtableClass <- R6::R6Class(
       formats <- unique(c(c('csv', 'json'), formats))
 
       if(is.null(dic)){
-        dic <- create_dic(d, hdtableType = hdtableType)
+        dic <- create_dic(d, hdtable_type = hdtable_type)
       } else {
-        dic$hdtype <- dic$hdtype %||% hdtableType_hdtypes(guess_hdtableType(d))
+        dic$hdtype <- dic$hdtype %||% hdtable_type_hdtypes(guess_hdtable_type(d))
         dic$hdtype <- as_hdtype(dic$hdtype)
         dic <- tibble::as_tibble(dic)
       }
@@ -54,8 +54,8 @@ hdtableClass <- R6::R6Class(
 
       self$dic <- dic
       self$data <- d
-      self$hdtableType <- hdtableType(paste0(dic$hdtype, collapse = "-"))
-      self$hdtableTypeGroup <- get_hdtableTypeGroup(hdtableType(dic$hdtype))
+      self$hdtable_type <- hdtable_type(paste0(dic$hdtype, collapse = "-"))
+      self$hdtable_type_group <- get_hdtable_type_group(hdtable_type(dic$hdtype))
 
       self$nrow <- nrow(self$data)
       self$ncol <- ncol(self$data)
@@ -80,8 +80,8 @@ hdtableClass <- R6::R6Class(
         description = self$description,
         slug = self$slug,
         formats = self$formats,
-        hdtableType = self$hdtableType,
-        hdtableTypeGroup = self$hdtableTypeGroup,
+        hdtable_type = self$hdtable_type,
+        hdtable_type_group = self$hdtable_type_group,
         nrow = self$nrow,
         ncol = self$ncol,
         credits = self$credits
@@ -93,7 +93,7 @@ hdtableClass <- R6::R6Class(
       if(!dir.exists(path)) dir.create(path, recursive = TRUE)
       save_path <- file.path(path,paste0(self$slug,".meta.json"))
       metadata <- self$metadata()
-      metadata$hdtableType <- as.character(metadata$hdtableType)
+      metadata$hdtable_type <- as.character(metadata$hdtable_type)
       jsonlite::write_json(metadata, save_path,
                            auto_unbox = TRUE, pretty = TRUE)
     },
@@ -156,8 +156,8 @@ hdtableClass <- R6::R6Class(
       dic$stats <- NULL
 
       info <- self$metadata()
-      info$hdtableType <- NULL
-      info$hdtableTypeGroup <- NULL
+      info$hdtable_type <- NULL
+      info$hdtable_type_group <- NULL
       info <- unlist(info)
       info <- data.frame(label = names(info), value = info)
       names(info) <- c("", "")

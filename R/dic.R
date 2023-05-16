@@ -4,7 +4,7 @@
 #' @description `create_dic()` Creates a data.frame dictionary identifying column id (with cleaned variable names), label and homodatum variable type
 #'
 #' @param d The data set for which the user is creating the dictionary for
-#' @param hdtableType pre-defined fringe types (check available_hdtypes() for the complete list)
+#' @param hdtable_type pre-defined fringe types (check available_hdtypes() for the complete list)
 #'
 #' @return a data frame with five columns: id, label, hdtype, format and stats
 #' @export
@@ -12,22 +12,22 @@
 #' @examples
 #' d <- mtcars
 #' new_dic <- create_dic(d)
-create_dic <- function(d, hdtableType = NULL){
+create_dic <- function(d, hdtable_type = NULL){
   if(is.null(d)) return()
 
-  if(is.null(hdtableType)){
+  if(is.null(hdtable_type)){
     if(is_hdtable(d)){
-      hdtableType <- hdtable_hdtableType(d)
+      hdtable_type <- hdtable_hdtable_type(d)
     }else{
-      hdtableType <- guess_hdtableType(d)
+      hdtable_type <- guess_hdtable_type(d)
     }
   }
-  if(!is_hdtableType(hdtableType))
-    hdtableType <- hdtableType(hdtableType)
+  if(!is_hdtable_type(hdtable_type))
+    hdtable_type <- hdtable_type(hdtable_type)
   ids <- col_ids_from_name(names(d))
 
   dic <-tibble::tibble(id = ids, label = names(d),
-                       hdtype = hdtableType_hdtypes(hdtableType))
+                       hdtype = hdtable_type_hdtypes(hdtable_type))
 
   dic <- update_dic(dic, d)
 

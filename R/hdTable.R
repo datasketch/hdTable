@@ -4,14 +4,14 @@
 #'
 #' - data: original data frame data. When it is created, the hdtable will convert original variable R types onto homodatum ones (Num, Cat, Pct, etc. -see [available_hdtypes()])
 #' - dic: A diccionary is created with three variable characteristics: id, label and hdtype
-#' - hdtableType: Shows all variable types based in homodatum schema
-#' - group: A grouped view of hdtableType
+#' - hdtable_type: Shows all variable types based in homodatum schema
+#' - group: A grouped view of hdtable_type
 #' - name: Name for the hdtable data frame, setted on _name_ argument
 #' - description: Description for the hdtable data frame, setted on _description_ argument
 #' - slug: a custom slug can be added
 #' - stats: Depending on the variable type given by homodatum, the hdtable will generate different kind of statistics: nrow, ncol, n_unique, n_na, pct_na, min, max
 #' @param x A data frame
-#' @param hdtableType The type of hdtable to create
+#' @param hdtable_type The type of hdtable to create
 #' @param dic a custom variable dictionary can be added. [create_dic()] can help you with that.
 #' @param name a custom name can be added
 #' @param nam a custom description can be added
@@ -19,13 +19,13 @@
 #' @param meta Custom Metadata can be added
 #'
 #' @examples
-#' hdtable(mtcars, hdtableType = "Num", name = "MTCars")
+#' hdtable(mtcars, hdtable_type = "Num", name = "MTCars")
 #'
 #' @return A hdtable object
 #' @export
 hdtable <- function(d,
                     dic = NULL,
-                    hdtableType = NULL,
+                    hdtable_type = NULL,
                     name = NULL,
                     description = NULL,
                     slug = NULL,
@@ -39,7 +39,7 @@ hdtable <- function(d,
   meta <- c(meta, list(...))
   if(dstools::is.empty(meta)) meta <- NULL
 
-  hdtableClass$new(d, dic = dic, hdtableType = hdtableType,
+  hdtableClass$new(d, dic = dic, hdtable_type = hdtable_type,
                name = name, description = description,
                slug = slug, meta = meta, formats = formats)
 }
@@ -69,7 +69,7 @@ is_hdtable <- function(x) {
 
 #' @export
 hdtable_update_meta <- function(f, ...){
-  fixed <- c("data", "dic", "hdtableType", "hdtableGroupType")
+  fixed <- c("data", "dic", "hdtable_type", "hdtableGroupType")
   message("args")
   args <- list(...)
   if(any(names(args) %in% fixed)){
@@ -183,8 +183,8 @@ hdtable_hdtypes <- function(fr, named = FALSE){
 }
 
 #'@export
-hdtable_hdtableType <- function(fr){
-  as.character(fr$hdtableType)
+hdtable_hdtable_type <- function(fr){
+  as.character(fr$hdtable_type)
 }
 
 
