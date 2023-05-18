@@ -1,6 +1,8 @@
 test_that("Fringe IO works", {
 
-  d <- tibble::tibble("Helloo X" = 1, "x 43" = as.Date("2020-04-21"))
+  d <- tibble::tibble("Helloo X" = 1,
+                      "x 43" = as.Date("2020-04-21"),
+                      "Cats" = "Michi")
   hdtab <- hdtable(d, name = "Los Carros", mas = "fda", formats = "xlsx")
 
 

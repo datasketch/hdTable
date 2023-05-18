@@ -1,6 +1,6 @@
 Package: hdtable
 Title: Homodatum Table
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: 
     person(given = "Juan Pablo",
            family = "Marin Diaz",
@@ -15,7 +15,7 @@ Depends:
     R (>= 4.2),
     vctrs
 Imports: 
-    hdtype,
+    hdtype (>= 0.0.2),
     R6,
     tibble,
     dplyr,
