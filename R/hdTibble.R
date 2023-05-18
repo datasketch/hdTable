@@ -34,7 +34,7 @@ hdtibble <- function(d, dic = NULL){
 
 
 hdtibble_as_basetype <- function(d){
-  purrr::map_df(d, as_baseType)
+  purrr::map_df(d, as_basetype)
 }
 
 
