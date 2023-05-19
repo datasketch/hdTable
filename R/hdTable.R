@@ -99,26 +99,11 @@ hdtable_update_meta <- function(f, ...){
 
 
 #' #' @export
-#' force_hdtypes <- function(df, hdtypes){
-#'   df <- as.data.frame(df)
-#'   if(ncol(df)!= length(hdtypes)) stop("number of df cols must be the same as col types length")
-#'   for (i in seq_along(hdtypes)){
-#'     if(hdtypes[i]=="Num"){df[,i]<- as.numeric(df[,i])}
-#'     if(hdtypes[i]=="Yea"){df[,i]<- as.character(df[,i])}
-#'     if(hdtypes[i]=="Cat"){df[,i]<- as.character(df[,i])}
-#'     if(hdtypes[i]=="Txt"){df[,i]<- as.character(df[,i])}
-#'     if(hdtypes[i]=="Img"){
-#'       if(!isImgUrl(df[,i])) stop ("Not an image Url")
-#'       df[,i]<- as.character(df[,i])
-#'     }
-#'     if(hdtypes[i]=="Dat"){df[,i]<- parseDatetime(df[,i],"Dat")}
-#'     if(hdtypes[i]=="Hms"){df[,i]<- parseDatetime(df[,i],"Hms")}
-#'     if(hdtypes[i]=="Dti"){df[,i]<- parseDatetime(df[,i],"Dti")}
-#'     if(hdtypes[i]=="Glt"){df[,i]<- as.numeric(df[,i])}
-#'     if(hdtypes[i]=="Gln"){df[,i]<- as.numeric(df[,i])}
-#'     if(hdtypes[i]=="Gnm"){df[,i]<- as.character(df[,i])}
-#'   }
-#'   as_tibble(df)
+#' force_hdtypes <- function(df, dic){
+#'   hdtibble <- purrr::map2(d, dic$hdtype, function(col, hdtype){
+#'     do.call(hdtype, list(col))
+#'   })
+#'   tibble::as_tibble(hdtibble)
 #' }
 
 

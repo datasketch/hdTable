@@ -7,10 +7,10 @@ test_that("hdtable funs", {
 
   expect_equal(hdtable_labels(f), nms)
 
-  f$d()
+  f$df()
   f$data
   expect_equal(hdtable_column(f,1),f$data[[1]])
   expect_equal(hdtable_column(f,"Dates"), f$data[[2]])
-  expect_equal(hdtable_column(f,"numbers"), hdtable_d(f)[[3]])
+  expect_equal(hdtable_column(f,"numbers"), hdtable_data(f)[[3]])
 
 })

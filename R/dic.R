@@ -15,6 +15,10 @@
 create_dic <- function(d, hdtable_type = NULL){
   if(is.null(d)) return()
 
+  if(!is.null(d$rcd___id)){
+    d$rcd___id <- NULL
+  }
+
   if(is.null(hdtable_type)){
     if(is_hdtable(d)){
       hdtable_type <- hdtable_hdtable_type(d)
@@ -51,14 +55,22 @@ create_dic <- function(d, hdtable_type = NULL){
 #' d <- mtcars
 #' new_dic <- create_dic(d)
 update_dic <- function(dic, d){
-  if(! (all(names(d) == dic$id) || all(names(d) == dic$label))){
+
+  nms_d <- names(d)[names(d) != "rcd___id"]
+  if(! (all(nms_d == dic$id) || all(names(d) == dic$label))){
       stop("Names of data do not correspond to dictionary columns ids or labels")
   }
 
+  d <- d |> dplyr::select(-any_of("rcd___id"))
   # Update format and stats
   dic$format <- get_fields(d, dic, "format")
   dic$stats <- get_fields(d, dic, "stats")
   # Keeps the same rcd_ids from before
+
+  if("fld___id" %in% names(dic)){
+    dic <- dic |> dplyr::relocate(fld___id, .after = last_col())
+  }
+
   dic
 
 }

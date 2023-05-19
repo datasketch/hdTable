@@ -31,6 +31,9 @@ hdtableClass <- R6::R6Class(
       slug <- slug %||% dstools::create_slug(name)
       formats <- unique(c(c('csv', 'json'), formats))
 
+
+      original_names <- names(d)[names(d) != "rcd___id"]
+
       if(is.null(dic)){
         dic <- create_dic(d, hdtable_type = hdtable_type)
       } else {
@@ -38,7 +41,16 @@ hdtableClass <- R6::R6Class(
         dic$hdtype <- as_hdtype(dic$hdtype)
         if(is.null(dic$fld___id)) dic$fld___id <- random_id_vector(nrow(dic))
         dic <- tibble::as_tibble(dic)
+
+        if( !all(dic$id == col_ids_from_name(dic$id))){
+          stop("Dictionary ids not clean to be uses as col names")
+        }
+        if(!all(original_names == dic$id)){
+          stop("names(d) do not correspond to clean dic_ids")
+        }
+
       }
+
       dd <- d
       if(!is_hdtibble(d)){
         dd <- hdtibble(d, dic)
@@ -72,16 +84,32 @@ hdtableClass <- R6::R6Class(
       self$credits <- "Dataset hosted at http://datasketch.co"
 
 
-    },
 
-    d = function(){
+
+
+    },
+    tibble = function(){
+      self$dd |> purrr::set_names(c(self$dic$id, "rcd___id"))
+    },
+    df = function(){
+      if(is.null(self$dd)) return()
+      dout <- hdtibble_as_basetype(self$dd)
+      dout |> dplyr::select(-rcd___id)
+    },
+    df_slug = function(){
       if(is.null(self$dd)) return()
       dout <- hdtibble_as_basetype(self$dd)
       dout <- dout |> dplyr::select(-rcd___id)
-      dout |> setNames(self$dic$id)
+      dout |> purrr::set_names(self$dic$id)
     },
-    tibble = function(){
-      self$dd |> setNames(c(self$dic$id, "rcd___id"))
+    df_slug_rcd = function(){
+      if(is.null(self$dd)) return()
+      dout <- hdtibble_as_basetype(self$dd)
+      dout |> purrr::set_names(c(self$dic$id, "rcd___id"))
+    },
+    dic_no_fld = function(){
+      self$dic |>
+        dplyr::select(-fld___id, -format, -stats)
     },
     metadata = function(){
       base_info <- list(
@@ -121,21 +149,18 @@ hdtableClass <- R6::R6Class(
       })
 
     },
-
     write_csv = function(path = ""){
       if(!dir.exists(path)) dir.create(path, recursive = TRUE)
       save_path <- file.path(path, paste0(self$slug,".csv"))
-      readr::write_csv(self$d(), save_path)
+      readr::write_csv(self$df(), save_path)
       dic_path <- file.path(path,paste0(self$slug,".dic.csv"))
-      dic <- self$dic
-      dic$format <- NULL
-      dic$stats <- NULL
+      dic <- self$dic_no_fld()
       readr::write_csv(dic, dic_path)
     },
     write_json = function(path = ""){
       if(!dir.exists(path)) dir.create(path, recursive = TRUE)
       save_path <- file.path(path,  paste0(self$slug,".json"))
-      dd <- self$dd
+      dd <- self$df_slug_rcd()
       d <- hdtibble_as_basetype(dd)
       jsonlite::write_json(d, save_path, auto_unbox = TRUE)
       # Save preview first 10 cols, 1000 rows
@@ -159,12 +184,9 @@ hdtableClass <- R6::R6Class(
       if(!dir.exists(path)) dir.create(path, recursive = TRUE)
       save_path <- file.path(path, paste0(self$slug,".xlsx"))
 
-      d <- self$d()
-      dic <- self$dic
+      d <- self$df()
+      dic <- self$dic_no_fld()
       dic$hdtype <- NULL
-      dic$format <- NULL
-      dic$stats <- NULL
-      dic$fld___id <- NULL
 
       info <- self$metadata()
       info$hdtable_type <- NULL
@@ -190,7 +212,9 @@ hdtableClass <- R6::R6Class(
   active = list(
     data = function(value) {
       if (missing(value)){
-        return(self$d())
+        return(
+          self$df_slug()
+          )
       }
       ## TODO
       # hdt$data <- mtcars, # assigns mtcars to the data

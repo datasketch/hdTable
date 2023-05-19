@@ -9,6 +9,12 @@ test_that("Fringe IO works", {
   expected_write_ext <- c(".csv", ".dic.csv", ".dic.json", ".json",
                           ".meta.json", ".xlsx")
 
+  hdtab$dd # hdtibble with labels and rcd___id
+  hdtab$tibble() # hdtibble with slug and rcd___id
+
+  hdtab$df_slug_rcd() # data.frame with slug and rcd___id
+  hdtab$df() # data.frame with labels
+  hdtab$data # data.frame with slug
 
 
   hdtab$write_csv("tmp/tmp2")
@@ -16,8 +22,12 @@ test_that("Fringe IO works", {
   hdtab$write_json("tmp/tmp2")
 
   json <- jsonlite::read_json("tmp/tmp2/los-carros.json", simplifyVector = TRUE)
-  expect_equal(names(d), names(json |> dplyr::select(-rcd___id)))
+  str(json)
+  expect_equal(col_ids_from_name(names(d)),
+               names(json |> dplyr::select(-rcd___id)))
   expect_true(!is.null(json$rcd___id))
+
+  expect_true(lubridate::is.Date(as.Date(json$x_43)))
 
   hdtab$write_xlsx("tmp/tmp2")
 
@@ -33,14 +43,14 @@ test_that("Fringe IO works", {
 
   expect_equal(hdtab$available_write_formats(), c("xlsx", "json", "csv"))
 
+})
 
-
-
+test_that("Big files write preview",{
   # Bigger to test preview
 
 
   expected_write_ext_with_preview <- c(".csv", ".dic.csv", ".dic.json", ".json",
-                          ".meta.json", ".preview.json")
+                                       ".meta.json", ".preview.json")
   tib <- tibble::tibble(n = 1:20)
   ht <- hdtable(tib)
   ht$preview_max_nrow <- 10
@@ -52,44 +62,72 @@ test_that("Fringe IO works", {
   expect_equal(nrow(prev), ht$preview_max_nrow)
   unlink("tmp/larger", recursive = TRUE)
 
-
-  # Another
-
-  dir <- "tmp/tab2"
-  ### for some reason this tempdir clashes with write_csv(data, "")
+})
 
 
-  hdtab$write_csv("tmp/tab2")
-  hdtab$write_meta_json("tmp/tab2")
-  hdtab$write_json("tmp/tab2")
+test_that("Write Read tables",{
 
-  # Ensure format and stats are saved in dic.json, not in dic.csv
-  l <- jsonlite::read_json("tmp/tab2/los-carros.dic.json")
+
+  d <- tibble::tibble("Helloo X" = 1,
+                      "x 43" = as.Date("2020-04-21"),
+                      "Cats" = "Michi")
+  hdtab <- hdtable(d, name = "Más carros", mas = "fda", formats = "xlsx")
+
+  dir <- "tmp/mas"
+  hdtab$write_csv("tmp/mas")
+  hdtab$write_meta_json("tmp/mas")
+  hdtab$write_json("tmp/mas")
+  hdtab$write_xlsx("tmp/mas")
+
+  l <- jsonlite::read_json("tmp/mas/mas-carros.dic.json")
   l <- purrr::transpose(l)
   expect_true(!is.null(l$format))
   expect_true(!is.null(l$stats))
 
-  hdtab$write_xlsx("tmp/tab2")
-
-  expected_files <- c('los-carros.csv', 'los-carros.dic.csv',
-                      'los-carros.json', 'los-carros.dic.json', 'los-carros.meta.json',
-                      'los-carros.xlsx')
+  expected_files <- c('mas-carros.csv', 'mas-carros.dic.csv',
+                      'mas-carros.json', 'mas-carros.dic.json',
+                      'mas-carros.meta.json',
+                      'mas-carros.xlsx')
 
   expect_true(all(file.exists(file.path(dir,expected_files))))
 
-
-
-
   path <- file.path(dir)
-
 
   hdtab2 <- hdtable_read(path)
 
   expect_equal(hdtab$data, hdtab2$data)
-  expect_equal(hdtab$dic |> dplyr::select(-fld___id),
-               hdtab2$dic |> dplyr::select(-fld___id))
+  expect_equal(hdtab$dic,
+               hdtab2$dic)
   expect_equal(hdtab$meta, hdtab2$meta)
 
-  unlink("tmp/tab2", recursive = TRUE)
+
+
+  unlink("tmp/mas", recursive = TRUE)
+
 
 })
+
+
+test_that("Read write gives the same results",{
+
+  d1 <- head(iris)
+  d1 <- hdtable(d1, name = "Iris")
+
+  path <- "tmp/iris"
+
+  hdtable_write(d1, path)
+
+  d2 <- hdtable_read(path)
+
+  expect_equal(d1$data, d2$data)
+  expect_equal(d1$df_slug_rcd(), d2$df_slug_rcd())
+
+  unlink(path, recursive = TRUE)
+
+
+
+})
+
+
+
+

@@ -29,22 +29,11 @@ hdtable_read <- function(path, slug = NULL){
                        "credits")
   additional_meta <- meta_json[!names(meta_json) %in% standard_fields]
 
-  d <- readr::read_csv(file.path(path, paste0(slug,".csv")),
-                       col_types = readr::cols())
-  dic <- readr::read_csv(file.path(path, paste0(slug,".dic.csv")),
-                         col_types = readr::cols())
-  dic <- update_dic(dic, d)
-  names(d) <- dic$label
-  # dic <- jsonlite::read_json(file.path(path, paste0(slug,".dic.json")))
-  #
-  # purrr::map(dic, tibble::as_tibble)
-  #
-  # x <- purrr::transpose(dic)
-  # tibble::as_tibble(x)
-  #
-  # names(d) <- dic$label
+  l <- read_json_hdtibble_dic(path, slug)
+  hdtibble <- l$hdtibble
+  dic <- l$dic
 
-  hdtable(d, dic = dic,
+  hdtable(hdtibble, dic = dic,
          name = meta_json$name, description = meta_json$description,
          slug = meta_json$slug,
          meta = additional_meta)
@@ -52,6 +41,28 @@ hdtable_read <- function(path, slug = NULL){
 }
 
 
+read_json_hdtibble_dic <- function(path, slug){
+  meta <- jsonlite::read_json(file.path(path, paste0(slug, ".meta.json")),
+                              simplifyVector = TRUE)
+  d <- jsonlite::read_json(file.path(path, paste0(slug, ".json")),
+                              simplifyVector = TRUE)
+  rcd___id <- d$rcd___id
+  dic <- jsonlite::read_json(file.path(path, paste0(slug, ".dic.json")),
+                             simplifyVector = TRUE)
+  format <- d$format
+  stats <- d$stats
+  dic$format <- NULL
+  dic$format <- format
+  dic$stats <- NULL
+  dic$stats <- stats
 
+  d <- d |>
+    dplyr::select(-any_of(c("format","stats")))
+  dic <- update_dic(dic,d)
+
+  list(hdtibble = hdtibble(d, dic = dic),
+       dic = dic)
+
+}
 
 

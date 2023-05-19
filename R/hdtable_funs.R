@@ -29,31 +29,26 @@ hdtable_column <- function(f, column){
       if(is.na(idx)){
         idx <- match(column, hdtable_ids(f))
       }
-      if(column %in% letters){
-        d <- hdtable_d(f)
-        return(d[[column]])
-      }
     }
   }
   if(is.null(idx)) stop("column not found")
-  hdtable_d(f)[[idx]]
+  hdtable_data(f)[[idx]]
 }
 
 
 #'@export
-hdtable_d <- function(f){
-  f$d()
+hdtable_df <- function(f){
+  f$df()
 }
+
 
 #'@export
 hdtable_data <- function(f, labels = FALSE){
-  data <- hdtable_d(f)
   if(labels){
-    names(data) <- hdtable_dic(f)$label
+    return(f$df())
   }else{
-    names(data) <- hdtable_dic(f)$id
+    data <- f$df_slug()
   }
-  class(data) <- class(data)[class(data) != "hd_tbl"]
   data
 }
 

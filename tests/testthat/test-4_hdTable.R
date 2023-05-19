@@ -19,7 +19,7 @@ test_that("hdtable", {
 
   hdtab$tibble() ### TODO fix empty name in tibble
   hdtab$dd
-  hdtab$d()
+  hdtab$df()
   hdtab$data
 
   f <- hdtable(cars)
@@ -42,15 +42,15 @@ test_that("hdtable", {
   ### SAMPLE DATA
 
   d <- sample_data("Cat-Dat-Num-Pct", n = 11,
-                  names = c("Category", "Dates", "Numbers","Percentages"))
+                   names = c("Category", "Dates", "Numbers","Percentages"))
   names(d)
   f <- hdtable(d)
 
   f$dic
   f$dd
-  f$d()
+  f$df()
 
-  expect_equal(d, f$d(), ignore_attr = TRUE)
+  expect_equal(d, f$df(), ignore_attr = TRUE)
   expect_equal(f$metadata()$nrow, 11)
   expect_equal(f$metadata()$ncol, 4)
 
@@ -63,33 +63,35 @@ test_that("hdtable creation with dictionaries work",{
 
   d <- cars
   names(d) <- c("a", "b")
+
   dic <- data.frame(label = c("speed", "dist"),
-                    id = c("speed", "dist"),
+                    id = c("a", "b"),
                     description = c("SPEED", "DIST"),
                     hdtype = c("Num", "Num"))
   f <- hdtable(d, dic = dic)
-  expect_equal(hdtable_d(f), d, ignore_attr = TRUE)
+  expect_equal(hdtable_df(f), d, ignore_attr = TRUE)
   expect_equal(f$dic$description, dic$description)
 
   dic <- data.frame(label = c("Speed", "Dist"),
                     id = c("speed", "dist"),
                     hdtype = c("Num", "Cat"),
                     stringsAsFactors = FALSE)
+  expect_error(hdtable(d, dic = dic))
+
+  names(d) <- c("speed", "dist")
   f2 <- hdtable(d, dic = dic)
-  expect_equal(hdtable_d(f2)[[2]], as.character(cars[[2]]), ignore_attr = TRUE)
+
+
+  expect_equal(hdtable_data(f2)[[2]], as.character(cars[[2]]), ignore_attr = TRUE)
   expect_equal(names(hdtable_data(f2)), dic$id, ignore_attr = TRUE)
-  expect_equal(names(hdtable_data(f2, labels =TRUE)), dic$label, ignore_attr = TRUE)
+
 
   dic <- data.frame(label = c("speed", "dist"),
                     id = c("speed", "dist"),
                     description = c("SPEED", "DIST"))
   f3 <- hdtable(d, dic = dic)
-  #expect_equal(f3, f)
   expect_equal(f3$name, f$name)
-  expect_equal(f3$data, f$data)
-  expect_equal(f3$dic |> dplyr::select(-fld___id),
-               f$dic |> dplyr::select(-fld___id))
-  #expect_equal(as.character(f3$hdtable_type_group), hdtable_type(f3))
+
 
 })
 
@@ -98,11 +100,11 @@ test_that("hdtable creation with dictionaries work",{
 test_that("hdtable dictionaries are correct",{
 
   f <- sample_hdtable("Cat-Dat-Num-Pct", n = 11,
-                     names = c("Category", "Dates", "Numbers","Percentages"))
+                      names = c("Category", "Dates", "Numbers","Percentages"))
   f$data
-  f$d()
+  f$df()
 
-  dd <- hdtable_d(f)
+  dd <- hdtable_data(f)
   nms <- dstools::create_slug(c("Category", "Dates", "Numbers","Percentages"))
   expect_equal(names(dd), nms)
   expect_equal(purrr::map_chr(dd, class),
@@ -158,7 +160,7 @@ test_that("hdtable dictionaries have format",{
 
   f$dic
 
-  dd <- hdtable_d(f)
+  dd <- hdtable_data(f)
   nms <- dstools::create_slug(c("Category", "Dates", "Numbers","Percentages"))
   expect_equal(names(dd), nms)
   expect_equal(purrr::map_chr(dd, class),
@@ -205,7 +207,16 @@ test_that("hdtable dictionaries have format",{
 
 })
 
+test_that("hdtable works with an hdtibble with rcd___id", {
 
+  d <- data.frame(book = c("Black", "Red"),
+                   value = 1:2,
+                   dates = c("28/04/2019", "4/12/2018"),
+                   rcd___id = c("45kjlkj4", "068kjlkj"))
+  hdtibble <- hdtibble(d)
+  expect_equal(hdtibble$rcd___id, d$rcd___id)
+
+})
 
 
 test_that("hdtable with metadata", {

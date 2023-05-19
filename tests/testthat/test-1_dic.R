@@ -24,7 +24,7 @@ test_that("dic",{
   # new_dic <- create_dic(d)
   # expect_equal(new_dic$hdtype, hdtype("Dat"))
 
-  d <- tibble::tibble("Helloo X" = 1, "x 43" = as.Date("2020-04-21"))
+  d <- tibble::tibble("helloo_x" = 1, "x_43" = as.Date("2020-04-21"))
   dic <- tibble::tibble(
     id = c("helloo_x", "x_43"),
     label = c("Helloo X", "x 43"),
@@ -32,7 +32,7 @@ test_that("dic",{
     )
   t <- hdtable(d, dic)
 
-  d$`Helloo X` <- 2
+  d$helloo_x <- 2
   dic_updated <- update_dic(dic, d)
 
   expect_true(class(dic_updated$format) == "list")

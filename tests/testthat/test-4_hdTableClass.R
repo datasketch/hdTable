@@ -16,7 +16,7 @@ test_that("hdtable", {
   expect_equal(t1$dic |> dplyr::select(-fld___id),
                t2$dic |> dplyr::select(-fld___id))
   expect_equal(t1$name, t2$name)
-  expect_equal(t1$d(), t2$d())
+  expect_equal(t1$df(), t2$df())
   expect_equal(hdtibble_as_basetype(t1$dd) |> dplyr::select(-rcd___id),
                hdtibble_as_basetype(t2$dd) |> dplyr::select(-rcd___id))
 
@@ -34,3 +34,15 @@ test_that("hdtable", {
 
 
 })
+
+
+test_that("Read d correctly with rcd___id",{
+
+  d <- jsonlite::read_json(system.file("iris.json", package = "hdtable"),
+                           simplifyVector = TRUE)
+
+
+
+})
+
+

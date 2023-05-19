@@ -4,6 +4,11 @@
 
 #' @export
 is_hdtibble <- function(d){
+  with_rcd_id <- !is.null(d$rcd___id)
+  if(with_rcd_id){
+    rcd___id <- d$rcd___id
+    d$rcd___id <- NULL
+  }
   all(purrr::map_lgl(d, hdtype::is_any_hdtype))
 }
 
@@ -15,6 +20,11 @@ hdtibble <- function(d, dic = NULL){
     dic <- create_dic(d)
   }
 
+  with_rcd_id <- !is.null(d$rcd___id)
+  if(with_rcd_id){
+    rcd___id <- d$rcd___id
+    d$rcd___id <- NULL
+  }
 
   hdts <- dic$hdtype
   hdts_str <- as.character(hdts)
@@ -23,11 +33,17 @@ hdtibble <- function(d, dic = NULL){
 
   # HERE GO ALL CASTS WITH GIVEN frType
   dd <- purrr::map2(d, hdts_str, function(x1,y1){
-    #if(y1 == "UKT") return(UKT(x1))
     do.call(y1, list(x1))
   })
+
   d <- dd %>% tibble::as_tibble()
-  d$rcd___id <- random_id_vector(nrow(d))
+
+  if(with_rcd_id){
+    d$rcd___id <- rcd___id
+  } else{
+    d$rcd___id <- random_id_vector(nrow(d))
+  }
+
   class(d) <- c(class(d), "hd_tbl")
   d
 }
