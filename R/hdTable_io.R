@@ -36,7 +36,8 @@ hdtable_read <- function(path, slug = NULL){
   hdtable(hdtibble, dic = dic,
          name = meta_json$name, description = meta_json$description,
          slug = meta_json$slug,
-         meta = additional_meta)
+         meta = additional_meta,
+         formats = meta_json$formats)
 
 }
 
@@ -56,8 +57,6 @@ read_json_hdtibble_dic <- function(path, slug){
   dic$stats <- NULL
   dic$stats <- stats
 
-  d <- d |>
-    dplyr::select(-any_of(c("format","stats")))
   dic <- update_dic(dic,d)
 
   list(hdtibble = hdtibble(d, dic = dic),

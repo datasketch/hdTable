@@ -101,6 +101,8 @@ test_that("Write Read tables",{
   expect_equal(hdtab$meta, hdtab2$meta)
 
 
+  expect_equal(hdtab, hdtab2)
+
 
   unlink("tmp/mas", recursive = TRUE)
 

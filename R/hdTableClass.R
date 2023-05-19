@@ -39,6 +39,7 @@ hdtableClass <- R6::R6Class(
       } else {
         dic$hdtype <- dic$hdtype %||% hdtable_type_hdtypes(guess_hdtable_type(d))
         dic$hdtype <- as_hdtype(dic$hdtype)
+        if(is.null(dic$label)) dic$label <- dic$id
         if(is.null(dic$fld___id)) dic$fld___id <- random_id_vector(nrow(dic))
         dic <- tibble::as_tibble(dic)
 
@@ -72,7 +73,12 @@ hdtableClass <- R6::R6Class(
       self$meta <- meta
 
       self$dic <- dic
+
+      if(!is.null(dd)){
+        names(dd) <- c(dic$label, "rcd___id")
+      }
       self$dd <- dd
+
       self$hdtable_type <- hdtable_type(paste0(dic$hdtype, collapse = "-"))
       self$hdtable_type_group <- get_hdtable_type_group(hdtable_type(dic$hdtype))
 

@@ -122,8 +122,10 @@ test_that("hdtable dictionaries are correct",{
                     hdtype = c("Cat","Num","Dat"))
   f <- hdtable(data, dic = dic)
 
+  expect_true(!is.null(f$dic$label))
+
   expect_equal(dic$id, f$dic$id)
-  expect_equivalent(hdtype(dic$hdtype), f$dic$hdtype)
+  expect_equal(hdtype(dic$hdtype), f$dic$hdtype)
 
   f_data <- hdtable_data(f)
   expect_false("hd_tbl" %in% class(f_data))
