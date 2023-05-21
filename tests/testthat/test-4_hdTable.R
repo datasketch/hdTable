@@ -275,3 +275,16 @@ test_that("hdtable with metadata", {
 
 })
 
+test_that("hdtable getters work", {
+
+  hdt <- hdtable(tibble::tibble(z = 1, a = "A", b = 0))
+  expect_equal(as.character(hdtable_type(hdt)), "Num-Cat-Num")
+  expect_equal(as.character(hdtable_type_group(hdt)), "Cat-Num2")
+
+
+})
+
+
+
+
+

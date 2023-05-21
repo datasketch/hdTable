@@ -90,7 +90,13 @@ expand_hdtable_type_group <- function(hdtable_type_group){
 #'
 #' @export
 hdtable_type <- function(x = character()) {
+
   if(is.null(x)) return()
+
+  if(is_hdtable(x)){
+    return(x$hdtable_type)
+  }
+
   if(is_hdtype(x)){
     # x <- vctrs::vec_cast(x, character()) # Not working!
     x <- vctrs::vec_data(x)
@@ -99,6 +105,33 @@ hdtable_type <- function(x = character()) {
   x <- vctrs::vec_cast(x, character())
   new_hdtable_type(x)
 }
+
+
+
+
+
+#' @title hdtable_type_group of an hdtable
+#'
+#' @description Gets the hdtable_type_group from an hdtable
+#'
+#' @param x hdtable
+#'
+#' @return returns a string
+#'
+#' @examples
+#'
+#' hdtable_type("Cat")
+#'
+#' @export
+
+hdtable_type_group <- function(x){
+  if(is_hdtable(x)){
+    return(x$hdtable_type_group)
+  }
+  if(!is_hdtable_type(x)) stop("x must be a hdtable_type")
+  attr(x, "group")
+}
+
 
 
 
@@ -143,12 +176,6 @@ as_hdtable_type <- function(x) {
 }
 
 
-
-
-# hdtable_type_group <- function(x){
-#   if(!is_hdtable_type(x)) stop("x must be a hdtable_type")
-#   attr(x, "group")
-# }
 
 
 
