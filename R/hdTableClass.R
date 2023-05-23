@@ -168,7 +168,8 @@ hdtableClass <- R6::R6Class(
       save_path <- file.path(path,  paste0(self$slug,".json"))
       dd <- self$df_slug_rcd()
       d <- hdtibble_as_basetype(dd)
-      jsonlite::write_json(d, save_path, auto_unbox = TRUE)
+      jsonlite::write_json(d, save_path, auto_unbox = TRUE,
+                           pretty = TRUE, na = "null")
       # Save preview first 10 cols, 1000 rows
       # Only when data is bigger than the nrow and ncols of preview
       nc <- self$preview_max_ncol
@@ -178,7 +179,8 @@ hdtableClass <- R6::R6Class(
           dplyr::select(dplyr::any_of(1:nc)) |>
           dplyr::slice(1:nr)
         preview_path <- file.path(path,  paste0(self$slug,".preview.json"))
-        jsonlite::write_json(preview, preview_path, auto_unbox = TRUE)
+        jsonlite::write_json(preview, preview_path, auto_unbox = TRUE,
+                             pretty = TRUE)
       }
       # Save dic.json
       dic_path <- file.path(path,paste0(self$slug,".dic.json"))

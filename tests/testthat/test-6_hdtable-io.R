@@ -131,5 +131,38 @@ test_that("Read write gives the same results",{
 })
 
 
+test_that("Save and read somre values", {
+
+
+  with_na <- tibble::tibble(a = 1:5, z = rep(NA,5))
+  h <- hdtable(with_na)
+  hdtable_write(h, "tmp/with_na")
+
+  h2 <- hdtable_read("tmp/with_na")
+  expect_true(all(is.na(h2$dd$z)))
+
+
+
+  # Test preview with larger columns
+  # matrix <- tibble::as_tibble(matrix(1:120, nrow = 5))
+  # names(matrix) <- paste("Ho ", names(matrix))
+  # h <- hdtable(matrix)
+  # h$ncol
+  # h$nrow
+  #
+  # h$write_json("tmp/matrix")
+  # hdtable_write(h, "tmp/matrix2")
+  #
+  # hdtable_read("tmp/matrix2")
+
+
+})
+
+
+
+
+
+
+
 
 
