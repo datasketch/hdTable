@@ -31,15 +31,15 @@ letterNames <- function(n){
   if(n<27)
     return(letters[1:n])
   if(n<703){
-    l2 <- expand(tibble(A=letters,B=letters),A,B) %>%
-      tidyr::unite("l",A,B,sep="") %>% .$l
+    l2 <- expand(tibble(A=letters,B=letters),A,B) |>
+      tidyr::unite("l",A,B,sep="") |> dplyr::pull(l)
     return(c(letters,l2)[1:n])
   }
   if(n < 18279){ # 26 + 676 + 17576 = 18278
-    l2 <- expand(tibble(A=letters,B=letters),A,B) %>%
-      tidyr::unite("l",A,B,sep="") %>% .$l
-    l3 <- expand(tibble(A=letters,B=letters,C=letters),A,B,C) %>%
-      tidyr::unite("l",A,B,C,sep="") %>% .$l
+    l2 <- expand(tibble(A=letters,B=letters),A,B) |>
+      tidyr::unite("l",A,B,sep="") |>  dplyr::pull(l)
+    l3 <- expand(tibble(A=letters,B=letters,C=letters),A,B,C) |>
+      tidyr::unite("l",A,B,C,sep="") |>  dplyr::pull(l)
     return(c(letters,l2,l3)[1:n])
   }
   stop("Cannot handle data with more than 18279 columns")

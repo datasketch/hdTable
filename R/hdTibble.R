@@ -36,7 +36,7 @@ hdtibble <- function(d, dic = NULL){
     do.call(y1, list(x1))
   })
 
-  d <- dd %>% tibble::as_tibble()
+  d <- dd |>  tibble::as_tibble()
 
   if(with_rcd_id){
     d$rcd___id <- rcd___id

@@ -38,7 +38,8 @@ get_hdtable_type_group <- function(hdtable_type_str){
   f <- function(hdtypes){
     ct <- dplyr::count(tibble::tibble(hdtypes = hdtypes),hdtypes)
     ct$n[ct$n == 1] <- ""
-    ctv <- tidyr::unite(ct,hdtype,hdtypes,n,sep="") %>% .[[1]] %>% sort()
+    ctv <- tidyr::unite(ct,hdtype,hdtypes,n,sep="") |>
+      dplyr::pull(1) |>  sort()
     paste(ctv,collapse="-")
   }
   purrr::map_chr(ctps, f)
@@ -59,7 +60,7 @@ get_hdtable_type_group <- function(hdtable_type_str){
 #' x <- c("Cat-Num-Cat")
 #' fr <- hdtable_type(x)
 #' grouped_fr <- get_hdtable_type_group(fr)
-#' expand_frGroup(grouped_fr)
+#' expand_hdtable_type_group(grouped_fr)
 #'
 #' @export
 expand_hdtable_type_group <- function(hdtable_type_group){
@@ -123,7 +124,6 @@ hdtable_type <- function(x = character()) {
 #' hdtable_type("Cat")
 #'
 #' @export
-
 hdtable_type_group <- function(x){
   if(is_hdtable(x)){
     return(x$hdtable_type_group)
