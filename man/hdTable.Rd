@@ -11,8 +11,10 @@ hdtable(
   name = NULL,
   description = NULL,
   slug = NULL,
+  d_path = NULL,
   meta = NULL,
   formats = NULL,
+  lazy = FALSE,
   ...
 )
 }

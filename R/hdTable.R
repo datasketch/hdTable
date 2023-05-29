@@ -44,7 +44,7 @@ hdtable <- function(d,
     if(fs::is_file(d)){
       file <- d
       if(is_large_data(file) || lazy){
-        dimension <- file_dimension(file)
+        magnitude <- file_magnitude(file)
         d <- NULL
         d_path <- file
       }else {

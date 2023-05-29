@@ -1,12 +1,12 @@
 
-
+#' @export
 is_large_data <- function(file){
-  file_size(file) > 50e6 || file_dimension(file) > 5
+  file_size(file) > 50e6 || file_magnitude(file) > 5
 }
 
 
-
-file_dimension <- function(file){
+#' @export
+file_magnitude <- function(file){
   if(file_ext(file) %in% c("csv", "tsv")){
     nrow <- file_nrow(file)
     ncol <- file_ncol(file)
@@ -28,12 +28,13 @@ file_dimension <- function(file){
   log10(nrow * ncol)
 }
 
-
+#' @export
 file_nrow <- function(file){
   if(is.null(file)) return()
   length(vroom::vroom_lines(file, altrep = TRUE, progress = FALSE)) - 1L
 }
 
+#' @export
 file_ncol <- function(file){
   if(is.null(file)) return()
   ncol(vroom::vroom(file, n_max = 1, show_col_types = FALSE))
