@@ -30,7 +30,14 @@ hdtableClass <- R6::R6Class(
 
       name <- name %||% deparse(substitute(d))
       description <- description %||% ""
-      slug <- slug %||% dstools::create_slug(name)
+
+      d_path_slug <- NULL
+      if(!is.null(d_path)){
+        d_path_slug <- tools::file_path_sans_ext(basename(d_path))
+      }
+
+      slug <- slug %||% d_path_slug %||% dstools::create_slug(name)
+
       formats <- unique(c(c('csv', 'json'), formats))
 
       self$d_path <- d_path

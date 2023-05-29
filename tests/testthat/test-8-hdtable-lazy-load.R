@@ -19,7 +19,11 @@ test_that("hdtable lazy load", {
   expect_error(hdtable(d, lazy = TRUE), "If lazy need to provide dictionary")
   dic <- create_dic(vroom::vroom(d))
   ht_lazy <- hdtable(d, dic = dic, lazy = TRUE)
+  expect_equal(ht_lazy$slug, "cars")
+
   expect_null(ht_lazy$dd)
+
+
   ht_lazy$df()
   expect_true(!is.null(ht_lazy$data))
   expect_equal(names(ht_lazy$dd),c("speed", "dist", "rcd___id"))
@@ -41,6 +45,9 @@ test_that("hdtable lazy load", {
 
   expect_equal(t$d_path, file_path)
   expect_null(t$dd)
+
+  expect_equal(t$slug, "nycflights")
+
   expect_equal(nrow(t$data), t$metadata()$nrow)
   expect_true(!is.null(t$dd))
 
