@@ -4,7 +4,7 @@
 
 #' @export
 is_hdtibble <- function(d){
-  with_rcd_id <- !is.null(d$rcd___id)
+  with_rcd_id <- "rcd___id" %in% names(d)
   if(with_rcd_id){
     rcd___id <- d$rcd___id
     d$rcd___id <- NULL
@@ -20,7 +20,7 @@ hdtibble <- function(d, dic = NULL){
     dic <- create_dic(d)
   }
 
-  with_rcd_id <- !is.null(d$rcd___id)
+  with_rcd_id <- "rcd___id" %in% names(d)
   if(with_rcd_id){
     rcd___id <- d$rcd___id
     d$rcd___id <- NULL

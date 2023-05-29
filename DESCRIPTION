@@ -22,6 +22,7 @@ Imports:
     lubridate,
     dstools (>= 0.1.0),
     purrr,
+    jsonlite,
     geodato
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3

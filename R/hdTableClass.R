@@ -3,6 +3,8 @@ hdtableClass <- R6::R6Class(
   "hdtable",
   public = list(
     dic = NULL,
+    d_path = NULL,
+    lazy = NULL,
     hdtable_type = NULL,
     name = NULL,
     slug = NULL,
@@ -14,6 +16,7 @@ hdtableClass <- R6::R6Class(
     field_stats = NULL,
     nrow = NULL,
     ncol = NULL,
+    magnitude = NULL,
     preview_max_nrow = NULL,
     preview_max_ncol = NULL,
     credits = NULL,
@@ -21,9 +24,8 @@ hdtableClass <- R6::R6Class(
     initialize = function(d, dic = NULL, hdtable_type = NULL,
                           name = NULL, description = NULL,
                           slug = NULL, meta = NULL,
+                          d_path = NULL,
                           formats =  NULL,
-                          nrow = NULL,
-                          ncol = NULL,
                           credits = NULL) {
 
       name <- name %||% deparse(substitute(d))
@@ -31,8 +33,17 @@ hdtableClass <- R6::R6Class(
       slug <- slug %||% dstools::create_slug(name)
       formats <- unique(c(c('csv', 'json'), formats))
 
+      self$d_path <- d_path
+      self$lazy <- FALSE
+      if(!is.null(self$d_path)){
+        self$lazy <- TRUE
+      }
 
       original_names <- names(d)[names(d) != "rcd___id"]
+
+      if(self$lazy && is.null(dic)){
+        stop("If lazy need to provide dictionary")
+      }
 
       if(is.null(dic)){
         dic <- create_dic(d, hdtable_type = hdtable_type)
@@ -40,7 +51,7 @@ hdtableClass <- R6::R6Class(
         dic$hdtype <- dic$hdtype %||% hdtable_type_hdtypes(guess_hdtable_type(d))
         dic$hdtype <- as_hdtype(dic$hdtype)
         if(is.null(dic$label)) dic$label <- dic$id
-        if(is.null(dic$fld___id)) dic$fld___id <- random_id_vector(nrow(dic))
+        if(!"fld___id" %in% names(dic)) dic$fld___id <- random_id_vector(nrow(dic))
         dic <- tibble::as_tibble(dic)
 
         if( !all(dic$id == col_ids_from_name(dic$id))){
@@ -56,7 +67,7 @@ hdtableClass <- R6::R6Class(
       if(!is_hdtibble(d)){
         dd <- hdtibble(d, dic)
       }
-      if(is.null(dd$rcd___id)){
+      if(! "rcd___id" %in% names(d)){
         if(!is.null(dd)){
           dd$rcd___id <- random_id_vector(nrow(d))
         }
@@ -82,34 +93,42 @@ hdtableClass <- R6::R6Class(
       self$hdtable_type <- hdtable_type(paste0(dic$hdtype, collapse = "-"))
       self$hdtable_type_group <- get_hdtable_type_group(hdtable_type(dic$hdtype))
 
-      self$nrow <- nrow(self$dd)
-      self$ncol <- nrow(self$dic)
+
+      self$nrow <- nrow(self$dd) %||% file_nrow(self$d_path)
+      self$ncol <- nrow(self$dic)  %||% file_ncol(self$d_path)
+      self$magnitude <-   log10(self$nrow * self$ncol)
+
       self$preview_max_nrow <- 1000
       self$preview_max_ncol <- 10
 
       self$credits <- "Dataset hosted at http://datasketch.co"
 
-
-
-
-
     },
-    tibble = function(){
-      self$dd |> purrr::set_names(c(self$dic$id, "rcd___id"))
+    dd_lazy_load = function(){
+      if(is.null(self$dd) && !self$lazy) return()
+      if(is.null(self$dd) && self$lazy){
+        self$dd <- vroom::vroom(self$d_path, show_col_types = FALSE)
+        if(is.null(self$dd$rcd___id)){
+          self$dd$rcd___id <- random_id_vector(self$nrow)
+        }
+      }
     },
     df = function(){
-      if(is.null(self$dd)) return()
+      if(is.null(self$dd) && !self$lazy) return()
+      self$dd_lazy_load()
       dout <- hdtibble_as_basetype(self$dd)
       dout |> dplyr::select(-rcd___id)
     },
     df_slug = function(){
-      if(is.null(self$dd)) return()
+      if(is.null(self$dd) && !self$lazy) return()
+      self$dd_lazy_load()
       dout <- hdtibble_as_basetype(self$dd)
       dout <- dout |> dplyr::select(-rcd___id)
       dout |> purrr::set_names(self$dic$id)
     },
     df_slug_rcd = function(){
-      if(is.null(self$dd)) return()
+      if(is.null(self$dd) && !self$lazy) return()
+      self$dd_lazy_load()
       dout <- hdtibble_as_basetype(self$dd)
       dout |> purrr::set_names(c(self$dic$id, "rcd___id"))
     },
@@ -222,7 +241,7 @@ hdtableClass <- R6::R6Class(
       if (missing(value)){
         return(
           self$df_slug()
-          )
+        )
       }
       ## TODO
       # hdt$data <- mtcars, # assigns mtcars to the data

@@ -34,7 +34,9 @@ test_that("Sample Column",{
 
 test_that("Sample Data", {
 
-  t <- sample_data("Cat-Num")
+
+  frtype <- "Cat-Num"
+  t <- sample_data(frtype)
 
   sampleCat(10)
 

@@ -34,6 +34,7 @@ test_that("tibbles with rcd___id work", {
     rcd___id = random_id_vector(2)
   )
   hdt <- hdtibble(d)
+  is_hdtibble(hdt)
   expect_true(is_hdtibble(hdt))
 
   expect_equal(d$rcd___id, hdt$rcd___id)

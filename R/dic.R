@@ -15,7 +15,7 @@
 create_dic <- function(d, hdtable_type = NULL){
   if(is.null(d)) return()
 
-  if(!is.null(d$rcd___id)){
+  if("rcd___id" %in% names(d)){
     d$rcd___id <- NULL
   }
 
@@ -82,7 +82,7 @@ get_fields <- function(d, dic, what = "format"){
   # what can by 'format' or 'stats'
   names(d) <- dic$id
   d <- hdtibble(d, dic = dic)
-  if(!is.null(d$rcd___id)) d$rcd___id <- NULL
+  if("rcd___id" %in% names(d)) d$rcd___id <- NULL
   purrr::map2(d, dic$hdtype, function(field, hdtype){
     fun_str <- paste0("hdtype::",hdtype, "_", what)
     do.call(getfun(fun_str), list(field))

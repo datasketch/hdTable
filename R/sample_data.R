@@ -12,6 +12,7 @@
 sample_data <- function(frtype, n = 20, loremNames = TRUE,
                        names = NULL,
                        addNA = TRUE, rep = FALSE,...){
+  #arg <- as.list(environment())
   arg <- c(as.list(environment()), list(...))
   arg <- purrr::discard(arg, is.null)
   # str(arg)
@@ -34,8 +35,17 @@ sample_data <- function(frtype, n = 20, loremNames = TRUE,
   params <- lapply(req_params, function(x){
     modifyList(x, arg)
   })
-  #lang <- args$lang %||% "en"
-  d <- purrr::invoke_map(sample_funs, params)
+
+  d <- purrr::map2(
+    lapply(sample_funs, getfun),
+    #list(list(mean = 0, sd = 1), list(mean = 1, sd = 1)),
+    params,
+    function(fn, args) purrr::exec(fn, !!!args)
+    )
+
+
+  #d <- purrr::invoke_map(sample_funs, params)
+
   names(d) <- letterNames(length(d))
   if(loremNames){
     ncols <- length(d)

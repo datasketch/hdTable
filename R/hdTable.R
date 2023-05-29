@@ -29,18 +29,38 @@ hdtable <- function(d,
                     name = NULL,
                     description = NULL,
                     slug = NULL,
+                    d_path = NULL,
                     meta = NULL,
                     formats = NULL,
+                    lazy = FALSE,
                     ...){
 
   if(is_hdtable(d)) return(d)
+
+  if(is.null(d)) return()
+
+  # Check if it is a file
+  if(is.character(d)){
+    if(fs::is_file(d)){
+      file <- d
+      if(is_large_data(file) || lazy){
+        dimension <- file_dimension(file)
+        d <- NULL
+        d_path <- file
+      }else {
+        d <- vroom::vroom(file)
+      }
+    }
+  }
 
   name <- name %||% deparse(substitute(d))
   meta <- c(meta, list(...))
   if(dstools::is.empty(meta)) meta <- NULL
 
+
   hdtableClass$new(d, dic = dic, hdtable_type = hdtable_type,
                name = name, description = description,
+               d_path = d_path,
                slug = slug, meta = meta, formats = formats)
 }
 

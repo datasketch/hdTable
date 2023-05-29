@@ -17,7 +17,6 @@ test_that("hdtable", {
   hdtibble(d, dic)
   hdtab <- hdtable(d)
 
-  hdtab$tibble() ### TODO fix empty name in tibble
   hdtab$dd
   hdtab$df()
   hdtab$data
@@ -53,9 +52,6 @@ test_that("hdtable", {
   expect_equal(d, f$df(), ignore_attr = TRUE)
   expect_equal(f$metadata()$nrow, 11)
   expect_equal(f$metadata()$ncol, 4)
-
-  names(d) <- dstools::create_slug(names(d))
-  expect_equal(d, f$tibble() |> dplyr::select(-rcd___id))
 
 })
 
@@ -181,7 +177,7 @@ test_that("hdtable dictionaries have format",{
   f <- hdtable(data, dic = dic)
 
   expect_equal(dic$id, f$dic$id)
-  expect_equivalent(hdtype(dic$hdtype), f$dic$hdtype)
+  expect_equal(hdtype(dic$hdtype), f$dic$hdtype)
 
   f_data <- hdtable_data(f)
   expect_false("hd_tbl" %in% class(f_data))
@@ -215,7 +211,12 @@ test_that("hdtable works with an hdtibble with rcd___id", {
                    value = 1:2,
                    dates = c("28/04/2019", "4/12/2018"),
                    rcd___id = c("45kjlkj4", "068kjlkj"))
+  guess_hdtable_type(d)
+  create_dic(d)
   hdtibble <- hdtibble(d)
+
+
+
   expect_equal(hdtibble$rcd___id, d$rcd___id)
 
 })

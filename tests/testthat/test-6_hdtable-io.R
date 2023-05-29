@@ -10,7 +10,6 @@ test_that("Fringe IO works", {
                           ".meta.json", ".xlsx")
 
   hdtab$dd # hdtibble with labels and rcd___id
-  hdtab$tibble() # hdtibble with slug and rcd___id
 
   hdtab$df_slug_rcd() # data.frame with slug and rcd___id
   hdtab$df() # data.frame with labels
