@@ -17,7 +17,7 @@ test_that("hdtable lazy load", {
   }
   d <- file_path
   expect_error(hdtable(d, lazy = TRUE), "If lazy need to provide dictionary")
-  dic <- create_dic(vroom::vroom(d))
+  dic <- create_dic(vroom::vroom(d, show_col_types = FALSE))
   ht_lazy <- hdtable(d, dic = dic, lazy = TRUE)
   expect_equal(ht_lazy$slug, "cars")
 
@@ -35,11 +35,16 @@ test_that("hdtable lazy load", {
   file_path <- file.path(path, "nycflights.csv")
   if(!file.exists(file_path)){
     #flights <- nycflights13::flights
-    #dic <- create_dic(flights)
     #readr::write_csv(dic, "tests/testthat/tmp/files/nycflights.dic.csv")
-    #readr::write_csv(dic, "tmp/files/nycflights.dic.csv")
     readr::write_csv(nycflights13::flights, file_path)
   }
+  if(!file.exists("tmp/files/nycflights.dic.csv")){
+    flights <- nycflights13::flights
+    dic <- create_dic(flights)
+    #readr::write_csv(dic, "tests/testthat/tmp/files/nycflights.dic.csv")
+    readr::write_csv(dic, "tmp/files/nycflights.dic.csv")
+  }
+
   dic <- vroom::vroom("tmp/files/nycflights.dic.csv", show_col_types = FALSE)
   t <- hdtable(file_path, dic = dic)
 
@@ -57,8 +62,19 @@ test_that("hdtable lazy load", {
   # JSON Stream
 
 
+  ### hdtable_read
+  path <- "tmp/files/table_flights"
+  hdtable_write(t, path)
 
+  t2 <- hdtable_read(path)
 
+  expect_null(t2$dd)
 
+  expect_equal(t2$slug, "nycflights")
+
+  expect_equal(nrow(t2$data), t2$metadata()$nrow)
+  expect_true(!is.null(t2$dd))
+
+  #unlink("tmp/files", recursive = TRUE)
 
 })

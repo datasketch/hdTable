@@ -9,7 +9,7 @@ hdtable_write <- function(hdtab, path = ""){
 
 
 #' @export
-hdtable_read <- function(path, slug = NULL){
+hdtable_read <- function(path, slug = NULL, lazy = TRUE){
 
   metas <- list.files(path, pattern = "\\.meta\\.json")
   if(!is.null(slug)){
@@ -29,17 +29,41 @@ hdtable_read <- function(path, slug = NULL){
                        "credits")
   additional_meta <- meta_json[!names(meta_json) %in% standard_fields]
 
-  l <- read_json_hdtibble_dic(path, slug)
-  hdtibble <- l$hdtibble
-  dic <- l$dic
+  if(lazy){
+    l <- read_csv_d_path_dic(path, slug)
+    dic <- l$dic
+    d <- l$d_path
 
-  hdtable(hdtibble, dic = dic,
+  }else{
+    l <- read_json_hdtibble_dic(path, slug)
+    d <- l$hdtibble
+    dic <- l$dic
+  }
+
+  hdtable(d, dic = dic,
          name = meta_json$name, description = meta_json$description,
          slug = meta_json$slug,
          meta = additional_meta,
          formats = meta_json$formats)
 
 }
+
+
+read_csv_d_path_dic <- function(path, slug){
+  meta <- jsonlite::read_json(file.path(path, paste0(slug, ".meta.json")),
+                              simplifyVector = TRUE)
+  dic <- jsonlite::read_json(file.path(path, paste0(slug, ".dic.json")),
+                             simplifyVector = TRUE)
+  d_path <- paste0(file.path(path, slug),".csv")
+  dic$format <- NULL
+  dic$stats <- NULL
+
+  list(d_path = d_path,
+       dic = dic)
+
+}
+
+
 
 
 read_json_hdtibble_dic <- function(path, slug){
