@@ -106,7 +106,7 @@ hdtableClass <- R6::R6Class(
       self$magnitude <-   log10(self$nrow * self$ncol)
 
       self$preview_max_nrow <- 1000
-      self$preview_max_ncol <- 10
+      self$preview_max_ncol <- 100
 
       self$credits <- "Dataset hosted at http://datasketch.co"
 
@@ -199,21 +199,24 @@ hdtableClass <- R6::R6Class(
     write_json = function(path = ""){
       if(!dir.exists(path)) dir.create(path, recursive = TRUE)
       save_path <- file.path(path,  paste0(self$slug,".json"))
-      dd <- self$df_slug_rcd()
-      d <- hdtibble_as_basetype(dd)
-      jsonlite::write_json(d, save_path, auto_unbox = TRUE,
-                           pretty = TRUE, na = "null")
-      # Save preview first 10 cols, 1000 rows
-      # Only when data is bigger than the nrow and ncols of preview
-      nc <- self$preview_max_ncol
-      nr <- self$preview_max_nrow
-      if(self$ncol > nc || self$nrow > nr){
+
+      if(self$magnitude < 5){
+        dd <- self$df_slug_rcd()
+        d <- hdtibble_as_basetype(dd)
+        jsonlite::write_json(d, save_path, auto_unbox = TRUE,
+                             pretty = TRUE, na = "null")
+      } else{
+        nc <- self$preview_max_ncol
+        nr <- self$preview_max_nrow
+        dd <- self$df_slug_rcd()
+        d <- hdtibble_as_basetype(dd)
         preview <- d |>
           dplyr::select(dplyr::any_of(1:nc)) |>
           dplyr::slice(1:nr)
         preview_path <- file.path(path,  paste0(self$slug,".preview.json"))
         jsonlite::write_json(preview, preview_path, auto_unbox = TRUE,
                              pretty = TRUE)
+
       }
       # Save dic.json
       dic_path <- file.path(path,paste0(self$slug,".dic.json"))

@@ -47,18 +47,20 @@ test_that("Fringe IO works", {
 test_that("Big files write preview",{
   # Bigger to test preview
 
+  dir.create("tmp/larger", recursive = TRUE, showWarnings = FALSE)
 
-  expected_write_ext_with_preview <- c(".csv", ".dic.csv", ".dic.json", ".json",
+  expected_write_ext_with_preview <- c(".csv", ".dic.csv", ".dic.json",
                                        ".meta.json", ".preview.json")
-  tib <- tibble::tibble(n = 1:20)
-  ht <- hdtable(tib)
-  ht$preview_max_nrow <- 10
+  m <- matrix(rep(0,100000), ncol = 100, nrow = 1000) |> as.data.frame()
+  ht <- hdtable(m)
+  ht$magnitude
+
   ht$write("tmp/larger")
   expect_equal(list.files("tmp/larger"),
                paste0(ht$slug, expected_write_ext_with_preview))
-  prev <- jsonlite::read_json("tmp/larger/tib.preview.json", simplifyVector = TRUE)
-  nrow(prev)
+  prev <- jsonlite::read_json("tmp/larger/m.preview.json", simplifyVector = TRUE)
   expect_equal(nrow(prev), ht$preview_max_nrow)
+
   unlink("tmp/larger", recursive = TRUE)
 
 })
@@ -66,6 +68,7 @@ test_that("Big files write preview",{
 
 test_that("Write Read tables",{
 
+  dir.create("tmp/mas", recursive = TRUE, showWarnings = FALSE)
 
   d <- tibble::tibble("Helloo X" = 1,
                       "x 43" = as.Date("2020-04-21"),
@@ -137,7 +140,7 @@ test_that("Read write gives the same results",{
 })
 
 
-test_that("Save and read somre values", {
+test_that("Save and read some values", {
 
 
   with_na <- tibble::tibble(a = 1:5, z = rep(NA,5))
@@ -160,6 +163,36 @@ test_that("Save and read somre values", {
   # hdtable_write(h, "tmp/matrix2")
   #
   # hdtable_read("tmp/matrix2")
+
+
+})
+
+
+test_that("Large files read", {
+
+  path <- "tmp/large_files"
+  dir.create(path, recursive = TRUE, showWarnings = FALSE)
+
+  file_path_rand <- file.path(path, "rand.csv")
+  file_path_rand_dic <- file.path(path, "rand.dic.csv")
+
+  # Create large table
+  rand <- rep(dstools::random_name(100000), 10000)
+  rand <- tibble::tibble(rand = rand, n = 1:length(rand))
+  dic_rand <- tibble::tibble(id = c("rand", "n"),
+                             label = c("RAND", "N"),
+                             hdtype = c("Cat", "Num"))
+  vroom::vroom_write(rand, file_path_rand)
+  vroom::vroom_write(dic_rand, file_path_rand_dic)
+
+  h1 <- hdtable_read(path)
+  h2 <- hdtable_read(path, slug = "rand")
+  expect_null(h1$dd)
+  expect_null(h2$dd)
+  expect_true(h1$lazy == h2$lazy)
+  expect_equal(h1$d_path, h2$d_path)
+
+  ## TODO FIX rcd___id, maybe not reading it
 
 
 })

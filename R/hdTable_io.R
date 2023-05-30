@@ -11,50 +11,71 @@ hdtable_write <- function(hdtab, path = ""){
 #' @export
 hdtable_read <- function(path, slug = NULL, lazy = TRUE){
 
+  meta_list <- list(
+    slug = slug,
+    name = slug,
+    description = NULL
+  )
+
   metas <- list.files(path, pattern = "\\.meta\\.json")
-  if(!is.null(slug)){
-    meta <- paste0(slug, ".meta.json")
-    if(!meta %in% metas){
-      stop("Not metadata for slug found in path")
-    }
-  } else{
+
+  if(length(metas) > 0){
     meta <- metas[1]
+    meta_list <- jsonlite::read_json(file.path(path, meta),
+                                     simplifyVector = TRUE)
+  } else{
+    if(!is.null(slug)){
+      if(file.exists(file.path(path, slug))){
+        meta_list <- jsonlite::read_json(file.path(path, slug),
+                                         simplifyVector = TRUE)
+      }
+    } else {
+      csv_files <- list.files(path, pattern = "\\.csv")
+      meta_list$slug <- unique(gsub("\\..*$", "", csv_files))[1]
+      meta_list$name <- meta_list$slug
+    }
   }
 
-  meta_json <- jsonlite::read_json(file.path(path, meta), simplifyVector = TRUE)
-  slug <- meta_json$slug
 
   standard_fields <- c("name", "description", "slug", "formats",
                        "hdtable_type", "hdtable_type_group", "ncol", "nrow",
                        "credits")
-  additional_meta <- meta_json[!names(meta_json) %in% standard_fields]
+  additional_meta <- meta_list[!names(meta_list) %in% standard_fields]
 
   if(lazy){
-    l <- read_csv_d_path_dic(path, slug)
+    l <- read_csv_d_path_dic(path, meta_list$slug)
     dic <- l$dic
     d <- l$d_path
 
   }else{
-    l <- read_json_hdtibble_dic(path, slug)
+    l <- read_json_hdtibble_dic(path, meta_list$slug)
     d <- l$hdtibble
     dic <- l$dic
   }
 
   hdtable(d, dic = dic,
-         name = meta_json$name, description = meta_json$description,
-         slug = meta_json$slug,
+         name = meta_list$name, description = meta_list$description,
+         slug = meta_list$slug,
          meta = additional_meta,
          lazy = lazy,
-         formats = meta_json$formats)
+         formats = meta_list$formats)
 
 }
 
 
 read_csv_d_path_dic <- function(path, slug){
-  meta <- jsonlite::read_json(file.path(path, paste0(slug, ".meta.json")),
-                              simplifyVector = TRUE)
-  dic <- jsonlite::read_json(file.path(path, paste0(slug, ".dic.json")),
-                             simplifyVector = TRUE)
+
+  if(file.exists(file.path(path, paste0(slug, ".dic.json")))){
+    dic <- jsonlite::read_json(file.path(path, paste0(slug, ".dic.json")),
+                               simplifyVector = TRUE)
+
+  }
+  if(file.exists(file.path(path, paste0(slug, ".dic.csv")))){
+    dic <- vroom::vroom(file.path(path, paste0(slug, ".dic.csv")),
+                               show_col_types = FALSE)
+
+  }
+
   d_path <- paste0(file.path(path, slug),".csv")
   dic$format <- NULL
   dic$stats <- NULL
