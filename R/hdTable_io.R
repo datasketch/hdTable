@@ -44,6 +44,7 @@ hdtable_read <- function(path, slug = NULL, lazy = TRUE){
          name = meta_json$name, description = meta_json$description,
          slug = meta_json$slug,
          meta = additional_meta,
+         lazy = lazy,
          formats = meta_json$formats)
 
 }

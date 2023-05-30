@@ -48,7 +48,11 @@ hdtable <- function(d,
         d <- NULL
         d_path <- file
       }else {
-        d <- vroom::vroom(file)
+        if(lazy){
+          d_path <- d
+        }else{
+          d <- vroom::vroom(file, show_col_types = FALSE)
+        }
       }
     }
   }
@@ -60,7 +64,7 @@ hdtable <- function(d,
 
   hdtableClass$new(d, dic = dic, hdtable_type = hdtable_type,
                name = name, description = description,
-               d_path = d_path,
+               d_path = d_path, lazy = lazy,
                slug = slug, meta = meta, formats = formats)
 }
 

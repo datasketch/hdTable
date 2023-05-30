@@ -24,7 +24,7 @@ hdtableClass <- R6::R6Class(
     initialize = function(d, dic = NULL, hdtable_type = NULL,
                           name = NULL, description = NULL,
                           slug = NULL, meta = NULL,
-                          d_path = NULL,
+                          d_path = NULL, lazy = TRUE,
                           formats =  NULL,
                           credits = NULL) {
 

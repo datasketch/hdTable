@@ -93,16 +93,21 @@ test_that("Write Read tables",{
   path <- file.path(dir)
 
   hdtab2 <- hdtable_read(path, lazy = FALSE)
-  #hdtab2 <- hdtable_read(path, lazy = TRUE)
+  expect_false(hdtab2$lazy)
+
 
   expect_equal(hdtab$data, hdtab2$data)
   expect_equal(hdtab$dic,
                hdtab2$dic)
   expect_equal(hdtab$meta, hdtab2$meta)
-
-
   expect_equal(hdtab, hdtab2)
 
+
+
+  hdtab3 <- hdtable_read(path, lazy = TRUE)
+  expect_null(hdtab3$dd)
+  expect_true(hdtab3$lazy)
+  expect_equal(hdtab3$data, hdtab2$data)
 
   unlink("tmp/mas", recursive = TRUE)
 
