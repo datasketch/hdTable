@@ -1,5 +1,6 @@
 test_that("Fringe IO works", {
 
+
   d <- tibble::tibble("Helloo X" = 1,
                       "x 43" = as.Date("2020-04-21"),
                       "Cats" = "Michi")
@@ -41,6 +42,9 @@ test_that("Fringe IO works", {
   unlink("tmp/tab2", recursive = TRUE)
 
   expect_equal(hdtab$available_write_formats(), c("xlsx", "json", "csv"))
+
+  path <- "tmp/tmp2"
+  unlink(path, recursive = TRUE)
 
 })
 
@@ -142,7 +146,7 @@ test_that("Read write gives the same results",{
 
 test_that("Save and read some values", {
 
-
+  path <- "tmp/with_na"
   with_na <- tibble::tibble(a = 1:5, z = rep(NA,5))
   h <- hdtable(with_na)
   hdtable_write(h, "tmp/with_na")
@@ -150,19 +154,7 @@ test_that("Save and read some values", {
   h2 <- hdtable_read("tmp/with_na")
   expect_true(all(is.na(h2$dd$z)))
 
-
-
-  # Test preview with larger columns
-  # matrix <- tibble::as_tibble(matrix(1:120, nrow = 5))
-  # names(matrix) <- paste("Ho ", names(matrix))
-  # h <- hdtable(matrix)
-  # h$ncol
-  # h$nrow
-  #
-  # h$write_json("tmp/matrix")
-  # hdtable_write(h, "tmp/matrix2")
-  #
-  # hdtable_read("tmp/matrix2")
+  unlink(path, recursive = TRUE)
 
 
 })
@@ -193,6 +185,48 @@ test_that("Large files read", {
   expect_equal(h1$d_path, h2$d_path)
 
   ## TODO FIX rcd___id, maybe not reading it
+
+  unlink(path, recursive = TRUE)
+
+
+})
+
+
+
+test_that("Folder read with slug", {
+
+  path <- "tmp/multi_files"
+  dir.create(path, recursive = TRUE, showWarnings = FALSE)
+
+  readr::write_csv(cars, file.path(path, "cars.csv"))
+  dic <- create_dic(cars)
+  dic <- dic |>
+    dplyr::mutate(format = jsonlite::toJSON(format, auto_unbox = TRUE),
+                  stats = jsonlite::toJSON(stats, auto_unbox = TRUE))
+  readr::write_csv(dic, file.path(path, "cars.dic.csv"))
+
+
+  names(iris) <- col_ids_from_name(names(iris))
+  readr::write_csv(iris, file.path(path, "iris.csv"))
+  dic <- create_dic(iris)
+  dic <- dic |>
+    dplyr::mutate(format = jsonlite::toJSON(format, auto_unbox = TRUE),
+                  stats = jsonlite::toJSON(stats, auto_unbox = TRUE))
+  readr::write_csv(dic, file.path(path, "iris.dic.csv"))
+
+  h1 <- hdtable_read(path)
+  expect_equal(h1$slug, "cars")
+  h2 <- hdtable_read(path, slug = "iris")
+  expect_equal(h2$slug, "iris")
+  expect_equal(names(h2$df()), names(iris))
+
+  h11 <- hdtable_read(path, slug = "cars", lazy = FALSE)
+  h22 <- hdtable_read(path, slug = "iris", lazy = FALSE)
+
+  expect_equal(h1$df(), h11$df())
+  expect_equal(h2$df(), h22$df())
+
+  unlink(path, recursive = TRUE)
 
 
 })
