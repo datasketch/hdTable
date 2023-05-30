@@ -228,6 +228,17 @@ test_that("Folder read with slug", {
 
   unlink(path, recursive = TRUE)
 
+  ###
+
+  path <- "tmp/many"
+  h1 <- hdtable(cars)
+  hdtable_write(h1, path)
+  h2 <- hdtable(iris)
+  hdtable_write(h2, path)
+
+  x <- hdtable_read(path, slug = "iris")
+  expect_equal(names(x$df()), col_ids_from_name(names(iris)))
+
 
 })
 

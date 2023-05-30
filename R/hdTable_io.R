@@ -20,7 +20,11 @@ hdtable_read <- function(path, slug = NULL, lazy = TRUE){
   metas <- list.files(path, pattern = "\\.meta\\.json")
 
   if(length(metas) > 0){
-    meta <- metas[1]
+    if(!is.null(slug)){
+      meta <- metas[grepl(slug, metas)]
+    }else{
+      meta <- metas[1]
+    }
     meta_list <- jsonlite::read_json(file.path(path, meta),
                                      simplifyVector = TRUE)
   } else{
