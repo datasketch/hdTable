@@ -146,7 +146,11 @@ hdtableClass <- R6::R6Class(
         dplyr::select(-fld___id, -format, -stats)
     },
     dic_csv = function(){
-      self$dic |>
+      dic <- self$dic
+      if(!"stats" %in% names(dic)){
+        dic <- update_dic(dic, self$dd)
+      }
+      dic |>
         dplyr::mutate(format = jsonlite::toJSON(format, auto_unbox = TRUE),
                       stats = jsonlite::toJSON(stats, auto_unbox = TRUE))
     },

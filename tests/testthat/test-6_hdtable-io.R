@@ -220,6 +220,9 @@ test_that("Folder read with slug", {
   expect_equal(h2$slug, "iris")
   expect_equal(names(h2$df()), names(iris))
 
+  hdtable_write(h1, path = "tmp/multi_files2")
+  hdtable_write(h2, path = "tmp/multi_files2")
+
   h11 <- hdtable_read(path, slug = "cars", lazy = FALSE)
   h22 <- hdtable_read(path, slug = "iris", lazy = FALSE)
 
@@ -227,6 +230,7 @@ test_that("Folder read with slug", {
   expect_equal(h2$df(), h22$df())
 
   unlink(path, recursive = TRUE)
+  unlink("tmp/multi_files2", recursive = TRUE)
 
   ###
 
