@@ -120,7 +120,7 @@ test_that("Read write gives the same results",{
   hdtable_write(d1, path)
 
   d2 <- hdtable_read(path, lazy = FALSE)
-  # d2 <- hdtable_read(path, lazy = TRUE)
+  d2 <- hdtable_read(path, lazy = TRUE)
 
   expect_equal(d1$data, d2$data)
   expect_equal(d1$df_slug_rcd(), d2$df_slug_rcd())

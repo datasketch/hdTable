@@ -9,6 +9,9 @@ test_that("dic",{
   expect_true(class(new_dic$stats) == "list")
 
   d <- cars
+  names(d) <- c("Speed", "Dist")
+  create_dic(d, hdtable_type = NULL)
+
   new_dic <- create_dic(d, hdtable_type = "Num-Num")
   expect_equal(new_dic$hdtype, hdtype(c("Num", "Num")))
 

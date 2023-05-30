@@ -124,7 +124,9 @@ hdtableClass <- R6::R6Class(
       if(is.null(self$dd) && !self$lazy) return()
       self$dd_lazy_load()
       dout <- hdtibble_as_basetype(self$dd)
-      dout |> dplyr::select(-rcd___id)
+      dout |>
+        dplyr::select(-rcd___id) |>
+        purrr::set_names(self$dic$label)
     },
     df_slug = function(){
       if(is.null(self$dd) && !self$lazy) return()
@@ -142,6 +144,11 @@ hdtableClass <- R6::R6Class(
     dic_no_fld = function(){
       self$dic |>
         dplyr::select(-fld___id, -format, -stats)
+    },
+    dic_csv = function(){
+      self$dic |>
+        dplyr::mutate(format = jsonlite::toJSON(format, auto_unbox = TRUE),
+                      stats = jsonlite::toJSON(stats, auto_unbox = TRUE))
     },
     metadata = function(){
       base_info <- list(
@@ -184,9 +191,9 @@ hdtableClass <- R6::R6Class(
     write_csv = function(path = ""){
       if(!dir.exists(path)) dir.create(path, recursive = TRUE)
       save_path <- file.path(path, paste0(self$slug,".csv"))
-      readr::write_csv(self$df(), save_path)
+      readr::write_csv(self$df_slug_rcd(), save_path)
       dic_path <- file.path(path,paste0(self$slug,".dic.csv"))
-      dic <- self$dic_no_fld()
+      dic <- self$dic_csv()
       readr::write_csv(dic, dic_path)
     },
     write_json = function(path = ""){

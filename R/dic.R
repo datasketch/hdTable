@@ -33,7 +33,6 @@ create_dic <- function(d, hdtable_type = NULL){
 
   dic <-tibble::tibble(id = ids, label = names(d),
                        hdtype = hdtable_type_hdtypes(hdtable_type))
-
   dic <- update_dic(dic, d)
   dic$fld___id <- random_id_vector(nrow(dic))
   dic
