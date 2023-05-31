@@ -41,7 +41,7 @@ hdtable <- function(d,
 
   # Check if it is a file
   if(is.character(d)){
-    if(fs::is_file(d)){
+    if(fs::is_file(d) || dstools::is_url(d)){
       file <- d
       if(is_large_data(file) || lazy){
         magnitude <- file_magnitude(file)

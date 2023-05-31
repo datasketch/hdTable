@@ -246,6 +246,16 @@ test_that("Folder read with slug", {
 
 })
 
+test_that("read table from url", {
+
+  path <- "https://s3.amazonaws.com/uploads.dskt.ch/test/db-cars"
+  t <- hdtable_read(path, slug = "cars")
+  expect_null(t$dd)
+  dat <- t$data
+  expect_equal(t$df(), tibble::as_tibble(cars))
+
+})
+
 
 
 

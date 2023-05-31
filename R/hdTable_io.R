@@ -17,28 +17,40 @@ hdtable_read <- function(path, slug = NULL, lazy = TRUE){
     description = NULL
   )
 
-  metas <- list.files(path, pattern = "\\.meta\\.json")
-
-  if(length(metas) > 0){
-    if(!is.null(slug)){
-      meta <- metas[grepl(slug, metas)]
+  if(dstools::is_url(path)){
+    if(is.null(slug)){
+      json_path <- paste0(path, ".meta.json")
     }else{
-      meta <- metas[1]
+      json_path <- paste0(file.path(path, slug), ".meta.json")
     }
-    meta_list <- jsonlite::read_json(file.path(path, meta),
+    meta_list <- jsonlite::read_json(json_path,
                                      simplifyVector = TRUE)
-  } else{
-    if(!is.null(slug)){
-      if(file.exists(file.path(path, slug))){
-        meta_list <- jsonlite::read_json(file.path(path, slug),
-                                         simplifyVector = TRUE)
+  }else{
+    metas <- list.files(path, pattern = "\\.meta\\.json")
+    if(length(metas) > 0){
+      if(!is.null(slug)){
+        meta <- metas[grepl(slug, metas)]
+      }else{
+        meta <- metas[1]
       }
-    } else {
-      csv_files <- list.files(path, pattern = "\\.csv")
-      meta_list$slug <- unique(gsub("\\..*$", "", csv_files))[1]
-      meta_list$name <- meta_list$slug
+      meta_list <- jsonlite::read_json(file.path(path, meta),
+                                       simplifyVector = TRUE)
+    } else{
+      if(!is.null(slug)){
+        if(file.exists(file.path(path, slug))){
+          meta_list <- jsonlite::read_json(file.path(path, slug),
+                                           simplifyVector = TRUE)
+        }
+      } else {
+        csv_files <- list.files(path, pattern = "\\.csv")
+        meta_list$slug <- unique(gsub("\\..*$", "", csv_files))[1]
+        meta_list$name <- meta_list$slug
+      }
     }
+
   }
+
+
 
 
   standard_fields <- c("name", "description", "slug", "formats",
@@ -69,15 +81,17 @@ hdtable_read <- function(path, slug = NULL, lazy = TRUE){
 
 read_csv_d_path_dic <- function(path, slug){
 
-  if(file.exists(file.path(path, paste0(slug, ".dic.json")))){
-    dic <- jsonlite::read_json(file.path(path, paste0(slug, ".dic.json")),
-                               simplifyVector = TRUE)
+  ### READ DICTIONARY FROM JSON? OR CSV?
+  # dic_path <- file.path(path, paste0(slug, ".dic.json"))
+  # if(dstools::is_url(dic_path) || file.exists(dic_path)){
+  #   dic <- jsonlite::read_json(file.path(path, paste0(slug, ".dic.json")),
+  #                              simplifyVector = TRUE)
+  # }
 
-  }
-  if(file.exists(file.path(path, paste0(slug, ".dic.csv")))){
+  dic_path <- file.path(path, paste0(slug, ".dic.csv"))
+  if(dstools::is_url(dic_path) || file.exists(dic_path)){
     dic <- vroom::vroom(file.path(path, paste0(slug, ".dic.csv")),
                         show_col_types = FALSE)
-
   }
 
   d_path <- paste0(file.path(path, slug),".csv")
@@ -94,27 +108,30 @@ read_csv_d_path_dic <- function(path, slug){
 
 read_json_hdtibble_dic <- function(path, slug){
 
-  if(file.exists(file.path(path, paste0(slug, ".meta.json")))){
+  json_path <- file.path(path, paste0(slug, ".meta.json"))
+
+  if(dstools::is_url(json_path) || file.exists(json_path)){
     meta <- jsonlite::read_json(file.path(path, paste0(slug, ".meta.json")),
                                 simplifyVector = TRUE)
   } else{
     meta <- list()
   }
 
-  if(file.exists(file.path(path, paste0(slug, ".json")))){
-    d <- jsonlite::read_json(file.path(path, paste0(slug, ".json")),
-                             simplifyVector = TRUE)
-  }else if(file.exists(file.path(path, paste0(slug, ".dic.csv")))){
-    d <- vroom::vroom(file.path(path, paste0(slug, ".csv")),
+  csv_path_slug <- file.path(path, paste0(slug, ".csv"))
+  if(dstools::is_url(json_path) || file.exists(csv_path_slug)){
+    d <- vroom::vroom(csv_path_slug,
                       show_col_types = FALSE)
   }
 
   rcd___id <- d$rcd___id
 
-  if(file.exists(file.path(path, paste0(slug, ".dic.json")))){
-    dic <- jsonlite::read_json(file.path(path, paste0(slug, ".dic.json")),
-                               simplifyVector = TRUE)
-  } else if(file.exists(file.path(path, paste0(slug, ".dic.csv")))){
+  ### READ DICTIONARY FROM JSON? OR CSV?
+  # if(file.exists(file.path(path, paste0(slug, ".dic.json")))){
+  #   dic <- jsonlite::read_json(file.path(path, paste0(slug, ".dic.json")),
+  #                              simplifyVector = TRUE)
+  # } else
+
+  if(file.exists(file.path(path, paste0(slug, ".dic.csv")))){
     dic <- vroom::vroom(file.path(path, paste0(slug, ".dic.csv")),
                         show_col_types = FALSE)
     dic <- dic |>
