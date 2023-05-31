@@ -104,8 +104,11 @@ test_that("Write Read tables",{
 
 
   expect_equal(hdtab$data, hdtab2$data)
-  expect_equal(hdtab$dic,
-               hdtab2$dic)
+
+  hdtab$dic$format
+  hdtab2$dic$format
+
+  expect_equal(hdtab$dic, hdtab2$dic)
   expect_equal(hdtab$meta, hdtab2$meta)
   expect_equal(hdtab, hdtab2)
 
@@ -253,6 +256,11 @@ test_that("read table from url", {
   expect_null(t$dd)
   dat <- t$data
   expect_equal(t$df(), tibble::as_tibble(cars))
+
+  path <- "https://s3.amazonaws.com/uploads.dskt.ch/test/db-cars"
+  t2 <- hdtable_read(path, slug = "cars", lazy = FALSE)
+  ## expect_equal(t$dd, t2$dd) ### OJO rcd___id not working
+  expect_equal(t$data, t2$data)
 
 })
 

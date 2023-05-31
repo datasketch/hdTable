@@ -59,12 +59,12 @@ hdtable_read <- function(path, slug = NULL, lazy = TRUE){
   additional_meta <- meta_list[!names(meta_list) %in% standard_fields]
 
   if(lazy){
-    l <- read_csv_d_path_dic(path, meta_list$slug)
+    l <- read_csv_d_path_dic(path, slug = meta_list$slug)
     dic <- l$dic
     d <- l$d_path
 
   }else{
-    l <- read_json_hdtibble_dic(path, meta_list$slug)
+    l <- read_json_hdtibble_dic(path, slug = meta_list$slug)
     d <- l$hdtibble
     dic <- l$dic
   }
@@ -82,6 +82,7 @@ hdtable_read <- function(path, slug = NULL, lazy = TRUE){
 read_csv_d_path_dic <- function(path, slug){
 
   ### READ DICTIONARY FROM JSON? OR CSV?
+  # Warning: dic doesn't exist for large files
   # dic_path <- file.path(path, paste0(slug, ".dic.json"))
   # if(dstools::is_url(dic_path) || file.exists(dic_path)){
   #   dic <- jsonlite::read_json(file.path(path, paste0(slug, ".dic.json")),
@@ -123,26 +124,42 @@ read_json_hdtibble_dic <- function(path, slug){
                       show_col_types = FALSE)
   }
 
-  rcd___id <- d$rcd___id
-
-  ### READ DICTIONARY FROM JSON? OR CSV?
-  # if(file.exists(file.path(path, paste0(slug, ".dic.json")))){
-  #   dic <- jsonlite::read_json(file.path(path, paste0(slug, ".dic.json")),
-  #                              simplifyVector = TRUE)
-  # } else
-
-  if(file.exists(file.path(path, paste0(slug, ".dic.csv")))){
-    dic <- vroom::vroom(file.path(path, paste0(slug, ".dic.csv")),
-                        show_col_types = FALSE)
-    dic <- dic |>
-      dplyr::mutate(
-        format = purrr::map(format, jsonlite::fromJSON),
-        stats = purrr::map(stats, jsonlite::fromJSON)
-      )
-
+  if("rcd___id" %in% names(d)){
+    rcd___id <- d$rcd___id
   }
 
-  dic <- update_dic(dic,d)
+  ### READ DICTIONARY FROM JSON? OR CSV?
+  # dic_path <- file.path(path, paste0(slug, ".dic.json"))
+  # if(file.exists(dic_path) || dstools::is_url(dic_path)){
+  #   dic0 <- jsonlite::read_json(dic_path,
+  #                               simplifyDataFrame = FALSE)
+  #   dic <- purrr::map(dic0, `[`, c("id", "label", 'hdtype')) |> dplyr::bind_rows()
+  #   format <- purrr::map(dic0, `[`, "format") |> setNames(dic$id)
+  #   dic$format <- format
+  #   stats <- purrr::map(dic0, `[`, "stats") |> setNames(dic$id)
+  #   dic$stats <- stats
+  #   dic
+  # }
+  dic_path <- file.path(path, paste0(slug, ".dic.csv"))
+  if(file.exists(dic_path) || dstools::is_url(dic_path)){
+    dic <- vroom::vroom(dic_path,
+                        show_col_types = FALSE)
+    dic$format <- NULL
+    dic$stats <- NULL
+    # if("stats" %in% names(dic)){
+    #   dic <- dic |>
+    #     dplyr::mutate(
+    #       format = purrr::map(format, jsonlite::fromJSON, null = "null") |> setNames(id),
+    #       stats = purrr::map(stats, jsonlite::fromJSON, null = "null") |> setNames(id)
+    #     )
+    # }
+  }
+
+
+
+  if(!"stats" %in% names(dic)){
+    dic <- update_dic(dic,d)
+  }
 
   list(hdtibble = hdtibble(d, dic = dic),
        dic = dic)

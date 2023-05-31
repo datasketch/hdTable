@@ -151,8 +151,10 @@ hdtableClass <- R6::R6Class(
         dic <- update_dic(dic, self$dd)
       }
       dic |>
-        dplyr::mutate(format = jsonlite::toJSON(format, auto_unbox = TRUE),
-                      stats = jsonlite::toJSON(stats, auto_unbox = TRUE))
+        dplyr::mutate(
+          format = purrr::map_chr(format, ~ jsonlite::toJSON(.,auto_unbox = TRUE)),
+          stats = purrr::map_chr(stats, ~ jsonlite::toJSON(.,auto_unbox = TRUE))
+        )
     },
     metadata = function(){
       base_info <- list(
