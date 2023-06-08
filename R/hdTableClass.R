@@ -115,7 +115,8 @@ hdtableClass <- R6::R6Class(
       if(is.null(self$dd) && !self$lazy) return()
       if(is.null(self$dd) && self$lazy){
         self$dd <- vroom::vroom(self$d_path, show_col_types = FALSE)
-        if(is.null(self$dd$rcd___id)){
+        self$nrow <- nrow(self$dd)
+        if(!"rcd___id" %in% names(self$dd)){
           self$dd$rcd___id <- random_id_vector(self$nrow)
         }
       }
@@ -139,7 +140,8 @@ hdtableClass <- R6::R6Class(
       if(is.null(self$dd) && !self$lazy) return()
       self$dd_lazy_load()
       dout <- hdtibble_as_basetype(self$dd)
-      dout |> purrr::set_names(c(self$dic$id, "rcd___id"))
+      nms <- c(self$dic$id, "rcd___id")
+      dout |> purrr::set_names(nms)
     },
     dic_no_fld = function(){
       self$dic |>
