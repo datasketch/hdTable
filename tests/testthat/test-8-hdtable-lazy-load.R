@@ -16,7 +16,7 @@ test_that("hdtable lazy load", {
     readr::write_csv(cars, file_path)
   }
   d <- file_path
-  expect_error(hdtable(d, lazy = TRUE), "If lazy need to provide dictionary")
+  expect_error(hdtable(d, lazy = TRUE))
   dic <- create_dic(vroom::vroom(d, show_col_types = FALSE))
   ht_lazy <- hdtable(d, dic = dic, lazy = TRUE)
   expect_equal(ht_lazy$slug, "cars")

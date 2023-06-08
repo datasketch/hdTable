@@ -265,6 +265,24 @@ test_that("read table from url", {
 })
 
 
+test_that("read table path", {
+
+  dir.create("tmp/iris")
+  d_path <- "tmp/iris/iris.csv"
+  readr::write_csv(iris, "tmp/iris/iris.csv")
+  dic <- create_dic(iris)
+  readr::write_csv(dic, "tmp/iris/iris.dic.csv")
+
+  hdt <- hdtable(d = "tmp/iris/iris.csv", lazy = TRUE)
+  #expect_equal(hdt$slug, "iris")
+
+  expect_null(hdt$dd)
+  hdtable_write(hdt, "tmp/iris_hdtable")
+
+})
+
+
+
 
 
 

@@ -33,7 +33,7 @@ hdtableClass <- R6::R6Class(
 
       d_path_slug <- NULL
       if(!is.null(d_path)){
-        d_path_slug <- tools::file_path_sans_ext(basename(d_path))
+        d_path_slug <- dstools::sans_ext(d_path)
       }
 
       slug <- slug %||% d_path_slug %||% dstools::create_slug(name)

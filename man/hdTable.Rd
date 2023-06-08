@@ -25,13 +25,13 @@ hdtable(
 
 \item{name}{a custom name can be added}
 
+\item{description}{a custom description can be added}
+
 \item{slug}{a custom slug can be added. If not, hdtable will try creating one.}
 
 \item{meta}{Custom Metadata can be added}
 
 \item{x}{A data frame}
-
-\item{nam}{a custom description can be added}
 }
 \value{
 A hdtable object

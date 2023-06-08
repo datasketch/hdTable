@@ -14,7 +14,7 @@
 #' @param hdtable_type The type of hdtable to create
 #' @param dic a custom variable dictionary can be added. [create_dic()] can help you with that.
 #' @param name a custom name can be added
-#' @param nam a custom description can be added
+#' @param description a custom description can be added
 #' @param slug a custom slug can be added. If not, hdtable will try creating one.
 #' @param meta Custom Metadata can be added
 #'
@@ -42,14 +42,21 @@ hdtable <- function(d,
   # Check if it is a file
   if(is.character(d)){
     if(fs::is_file(d) || dstools::is_url(d)){
+      slug <- slug %||% dstools::sans_ext(d)
       file <- d
       if(is_large_data(file) || lazy){
         magnitude <- file_magnitude(file)
         d <- NULL
         d_path <- file
+        dic_file <- gsub("\\.csv$", "\\.dic\\.csv", d_path)
+        if(is.null(dic)){
+          dic <- vroom::vroom(dic_file, show_col_types = FALSE)
+        }
       }else {
         if(lazy){
           d_path <- d
+          dic_file <- gsub("\\.csv$", "\\.dic\\.csv", d_path)
+          dic <- vroom::vroom(dic_file, show_col_types = FALSE)
         }else{
           d <- vroom::vroom(file, show_col_types = FALSE)
         }
