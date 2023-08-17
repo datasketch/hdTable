@@ -105,9 +105,9 @@ hdtableClass <- R6::R6Class(
       self$ncol <- nrow(self$dic)  %||% file_ncol(self$d_path)
       self$magnitude <-   log10(self$nrow * self$ncol) %||% 0
 
-      if(self$magnitude > 5){
-        self$formats <- self$formats[self$formats != "json"]
-      }
+      #if(self$magnitude > 5){
+      # self$formats <- self$formats[self$formats != "json"]
+      #}
 
       self$preview_max_nrow <- 1000
       self$preview_max_ncol <- 100
