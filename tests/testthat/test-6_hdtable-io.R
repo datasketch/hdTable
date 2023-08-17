@@ -8,7 +8,8 @@ test_that("Fringe IO works", {
 
 
   expected_write_ext <- c(".csv", ".dic.csv", ".dic.json", ".json",
-                          ".meta.json", ".xlsx")
+                          ".meta.json", ".preview.json",
+                          ".xlsx")
 
   hdtab$dd # hdtibble with labels and rcd___id
 

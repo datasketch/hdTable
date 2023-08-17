@@ -103,7 +103,11 @@ hdtableClass <- R6::R6Class(
 
       self$nrow <- nrow(self$dd) %||% file_nrow(self$d_path)
       self$ncol <- nrow(self$dic)  %||% file_ncol(self$d_path)
-      self$magnitude <-   log10(self$nrow * self$ncol)
+      self$magnitude <-   log10(self$nrow * self$ncol) %||% 0
+
+      if(self$magnitude > 5){
+        self$formats <- self$formats[self$formats != "json"]
+      }
 
       self$preview_max_nrow <- 1000
       self$preview_max_ncol <- 100
@@ -213,19 +217,21 @@ hdtableClass <- R6::R6Class(
         d <- hdtibble_as_basetype(dd)
         jsonlite::write_json(d, save_path, auto_unbox = TRUE,
                              pretty = TRUE, na = "null")
-      } else{
-        nc <- self$preview_max_ncol
-        nr <- self$preview_max_nrow
-        dd <- self$df_slug_rcd()
-        d <- hdtibble_as_basetype(dd)
-        preview <- d |>
-          dplyr::select(dplyr::any_of(1:nc)) |>
-          dplyr::slice(1:nr)
-        preview_path <- file.path(path,  paste0(self$slug,".preview.json"))
-        jsonlite::write_json(preview, preview_path, auto_unbox = TRUE,
-                             pretty = TRUE)
-
       }
+
+      # Write preview (always)
+      nc <- self$preview_max_ncol
+      nr <- self$preview_max_nrow
+      dd <- self$df_slug_rcd()
+      d <- hdtibble_as_basetype(dd)
+      preview <- d |>
+        dplyr::select(dplyr::any_of(1:nc)) |>
+        dplyr::slice(1:nr)
+      preview_path <- file.path(path,  paste0(self$slug,".preview.json"))
+      jsonlite::write_json(preview, preview_path, auto_unbox = TRUE,
+                           pretty = TRUE)
+
+
       # Save dic.json
       dic_path <- file.path(path,paste0(self$slug,".dic.json"))
       dic <- self$dic
