@@ -172,7 +172,9 @@ hdtableClass <- R6::R6Class(
         hdtable_type_group = self$hdtable_type_group,
         nrow = self$nrow,
         ncol = self$ncol,
-        credits = self$credits
+        credits = self$credits,
+        preview_ncol = self$preview_max_ncol,
+        preview_nrow = self$preview_max_nrow
       )
       #stats <- self$field_stats
       c(base_info, self$meta)
@@ -194,11 +196,10 @@ hdtableClass <- R6::R6Class(
       gsub("write_","", nms)
     },
     write = function(path = ""){
-      self$write_meta_json(path)
       purrr::walk(self$formats, function(format){
         self[[paste0("write_", format)]](path)
       })
-
+      self$write_meta_json(path)
     },
     write_csv = function(path = ""){
       if(!dir.exists(path)) dir.create(path, recursive = TRUE)
@@ -228,6 +229,11 @@ hdtableClass <- R6::R6Class(
         dplyr::select(dplyr::any_of(1:nc)) |>
         dplyr::slice(1:nr)
       preview_path <- file.path(path,  paste0(self$slug,".preview.json"))
+      if(pryr::object_size(preview) > 1e6){
+        preview <- d |>
+          dplyr::slice(1:(nr/10))
+        self$preview_max_nrow <- nr/10
+      }
       jsonlite::write_json(preview, preview_path, auto_unbox = TRUE,
                            pretty = TRUE)
 

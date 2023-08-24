@@ -55,7 +55,7 @@ hdtable_read <- function(path, slug = NULL, lazy = TRUE){
 
   standard_fields <- c("name", "description", "slug", "formats",
                        "hdtable_type", "hdtable_type_group", "ncol", "nrow",
-                       "credits")
+                       "credits", "preview_ncol", "preview_nrow")
   additional_meta <- meta_list[!names(meta_list) %in% standard_fields]
 
   if(lazy){

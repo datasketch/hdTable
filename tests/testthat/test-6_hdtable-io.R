@@ -283,6 +283,15 @@ test_that("read table path", {
 })
 
 
+test_that("file with big preview",{
+
+  d <- readr::read_csv("tmp/large_preview/encuestas_mujeres.csv",
+                       locale = readr::locale(encoding = "ISO-8859-1"))
+  t <- hdtable(d)
+  hdtable_write(t, "tmp/large_preview/encuestas")
+
+})
+
 
 
 
