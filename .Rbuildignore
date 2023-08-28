@@ -1,0 +1,5 @@
+^hdTable\.Rproj$
+^\.Rproj\.user$
+tests/testthat/tmp/*
+tmp/*
+
