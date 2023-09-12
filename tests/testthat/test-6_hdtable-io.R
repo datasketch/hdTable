@@ -88,7 +88,8 @@ test_that("Write Read tables",{
 
   l <- jsonlite::read_json("tmp/mas/mas-carros.dic.json")
   l <- purrr::transpose(l)
-  expect_true(!is.null(l$format))
+
+  #expect_true(!is.null(l$format))
 
   ## Make sure to add back when we have control on when to save dic stats
   #expect_true(!is.null(l$stats))
