@@ -247,7 +247,7 @@ hdtableClass <- R6::R6Class(
       dic_path <- file.path(path,paste0(self$slug,".dic.json"))
       dic <- self$dic
       dic$hdtype <- as.character(dic$hdtype)
-      dic$formats <- NULL
+      dic$format <- NULL
       dic$stats <- NULL
       jsonlite::write_json(dic, dic_path, auto_unbox = TRUE, pretty = TRUE)
     },
