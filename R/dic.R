@@ -53,7 +53,7 @@ create_dic <- function(d, hdtable_type = NULL){
 #' @examples
 #' d <- mtcars
 #' new_dic <- create_dic(d)
-update_dic <- function(dic, d){
+update_dic <- function(dic, d, stats = TRUE){
 
   nms_d <- names(d)[names(d) != "rcd___id"]
   if(! (all(nms_d == dic$id) || all(names(d) == dic$label))){
@@ -63,7 +63,9 @@ update_dic <- function(dic, d){
   d <- d |> dplyr::select(-any_of("rcd___id"))
   # Update format and stats
   dic$format <- get_fields(d, dic, "format")
-  dic$stats <- get_fields(d, dic, "stats")
+  if(stats){
+    dic$stats <- get_fields(d, dic, "stats")
+  }
   # Keeps the same rcd_ids from before
 
   if("fld___id" %in% names(dic)){

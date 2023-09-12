@@ -10,6 +10,7 @@ hdtableClass <- R6::R6Class(
     slug = NULL,
     description = NULL,
     formats = NULL,
+    stats = NULL,
     meta = NULL,
     hdtable_type_group = NULL,
     dd = NULL,
@@ -26,6 +27,7 @@ hdtableClass <- R6::R6Class(
                           slug = NULL, meta = NULL,
                           d_path = NULL, lazy = TRUE,
                           formats =  NULL,
+                          stats = TRUE,
                           credits = NULL) {
 
       name <- name %||% deparse(substitute(d))
@@ -46,11 +48,14 @@ hdtableClass <- R6::R6Class(
         self$lazy <- TRUE
       }
 
+      self$stats <- stats
+
       original_names <- names(d)[names(d) != "rcd___id"]
 
       if(self$lazy && is.null(dic)){
         stop("If lazy need to provide dictionary")
       }
+
 
       if(is.null(dic)){
         dic <- create_dic(d, hdtable_type = hdtable_type)
@@ -154,7 +159,7 @@ hdtableClass <- R6::R6Class(
     dic_csv = function(){
       dic <- self$dic
       if(!"stats" %in% names(dic)){
-        dic <- update_dic(dic, self$dd)
+        dic <- update_dic(dic, self$dd, stats = self$stats)
       }
       dic |>
         dplyr::mutate(
@@ -242,6 +247,7 @@ hdtableClass <- R6::R6Class(
       dic_path <- file.path(path,paste0(self$slug,".dic.json"))
       dic <- self$dic
       dic$hdtype <- as.character(dic$hdtype)
+      dic$stats <- NULL
       jsonlite::write_json(dic, dic_path, auto_unbox = TRUE, pretty = TRUE)
     },
     write_xlsx = function(path = ""){
