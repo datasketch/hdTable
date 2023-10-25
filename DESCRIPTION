@@ -24,6 +24,10 @@ Imports:
     purrr,
     jsonlite,
     geodato
+Remotes:
+    datasketch/dstools,
+    datasketch/geodato,
+    datasketch/hdtype
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Suggests: 
