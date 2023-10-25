@@ -97,9 +97,9 @@ hdtableClass <- R6::R6Class(
 
       self$dic <- dic
 
-      if(!is.null(dd)){
-        names(dd) <- c(dic$label, "rcd___id")
-      }
+      # if(!is.null(dd)){
+      #   names(dd) <- c(dic$label, "rcd___id")
+      # }
       self$dd <- dd
 
       self$hdtable_type <- hdtable_type(paste0(dic$hdtype, collapse = "-"))

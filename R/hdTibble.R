@@ -29,6 +29,7 @@ hdtibble <- function(d, dic = NULL){
   hdts <- dic$hdtype
   hdts_str <- as.character(hdts)
 
+  names(d) <- col_ids_from_name(names(d))
   d <- as.data.frame(d)
 
   # HERE GO ALL CASTS WITH GIVEN frType

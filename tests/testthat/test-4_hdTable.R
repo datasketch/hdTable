@@ -6,18 +6,20 @@ test_that("hdtable", {
 
 
   # NA hdtables
-  d <- data.frame(x = NA)
-  dic <- create_dic(data.frame(x = NA))
+  d <- data.frame(`x 34` = NA)
+  dic <- create_dic(data.frame(`x 34` = NA))
   dd <- hdtibble(d, dic = dic)
-  expect_equal(UKT(d$x), dd$x)
+  expect_equal(UKT(d$x.34), dd$x_34)
   #expect_equal(as.logical(dd$x), NA) # Casting to logical not working
 
-  d <- data.frame(x = NA)
+  d <- tibble::tibble(`x#34` = NA)
   dic <- create_dic(d)
+  dic
   hdtibble(d, dic)
   hdtab <- hdtable(d)
 
   hdtab$dd
+  expect_equal(names(hdtab$dd), c("x_34", "rcd___id"))
   hdtab$df()
   hdtab$data
 

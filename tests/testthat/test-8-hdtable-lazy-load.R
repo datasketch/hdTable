@@ -31,6 +31,10 @@ test_that("hdtable lazy load", {
 
   # t <- hdtableClass$new(vroom::vroom(file))
 
+  if(!requireNamespace("nycflights13", quietly = TRUE)){
+    install.packages("nycflights13")
+  }
+
   # Bigger CSV
   file_path <- file.path(path, "nycflights.csv")
   if(!file.exists(file_path)){
