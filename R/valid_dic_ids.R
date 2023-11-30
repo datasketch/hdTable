@@ -7,9 +7,15 @@ valid_dic_ids <- function(dic, d = NULL){
     nms <- nms[nms != "rcd___id"]
     # Table names and dic ids are consistent
     d_nms_ok <- all(nms %in% dic$id)
-    if(!d_nms_ok) return(FALSE)
+    if(!d_nms_ok){
+      message("missing dic id: ", dstools::which_not_in(nms, dic$id))
+      return(FALSE)
+    }
     dic_nms_ok <- all(dic$id %in% nms)
-    if(!dic_nms_ok) return(FALSE)
+    if(!dic_nms_ok){
+      message("missing column: ", dstools::which_not_in(dic$id, nms))
+      return(FALSE)
+    }
   }
 
   # names are unique

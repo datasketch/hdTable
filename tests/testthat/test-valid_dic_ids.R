@@ -31,7 +31,13 @@ test_that("Valid dic ids", {
   expect_true(valid_dic_ids(dic, d))
 
 
-  dic <- data.frame(id = c("helloo_x", "x_43", "cats"))
-  valid_dic_ids(dic)
+  dic <- data.frame(id = c("helloo_x", "x_43"))
+  d <- data.frame("helloo_x" = 1, "x_43" = 2, "nope" = 3)
+  valid_dic_ids(dic, d)
+
+  d <- data.frame("helloo_x" = 1)
+  valid_dic_ids(dic, d)
+
+
 
 })
