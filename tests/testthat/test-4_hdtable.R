@@ -19,7 +19,7 @@ test_that("hdtable", {
   hdtab <- hdtable(d)
 
   hdtab$dd
-  expect_equal(names(hdtab$dd), c("x_34", "rcd___id"))
+  expect_equal(names(hdtab$dd), c("xnum34", "rcd___id"))
   hdtab$df()
   hdtab$data
 
@@ -100,6 +100,8 @@ test_that("hdtable dictionaries are correct",{
   f <- sample_hdtable("Cat-Dat-Num-Pct", n = 11,
                       names = c("Category", "Dates", "Numbers","Percentages"))
   f$data
+  f$dd
+  f$df_slug()
   f$df()
 
   dd <- hdtable_data(f)

@@ -29,7 +29,7 @@ create_dic <- function(d, hdtable_type = NULL){
   if(!is_hdtable_type(hdtable_type)){
     hdtable_type <- hdtable_type(hdtable_type)
   }
-  ids <- col_ids_from_name(names(d))
+  ids <- clean_names(names(d))
 
   dic <-tibble::tibble(id = ids, label = names(d),
                        hdtype = hdtable_type_hdtypes(hdtable_type))

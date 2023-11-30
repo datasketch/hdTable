@@ -66,7 +66,7 @@ hdtable <- function(d,
 
   name <- name %||% deparse(substitute(d))
   meta <- c(meta, list(...))
-  if(dstools::is.empty(meta)) meta <- NULL
+  if(all(dstools::is.empty(meta))) meta <- NULL
 
 
   hdtableClass$new(d, dic = dic, hdtable_type = hdtable_type,

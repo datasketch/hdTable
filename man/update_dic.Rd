@@ -4,7 +4,7 @@
 \alias{update_dic}
 \title{Update Dictionary with data}
 \usage{
-update_dic(dic, d)
+update_dic(dic, d, stats = TRUE)
 }
 \arguments{
 \item{dic}{The original dictionary}

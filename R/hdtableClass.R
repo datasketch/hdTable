@@ -66,7 +66,7 @@ hdtableClass <- R6::R6Class(
         if(!"fld___id" %in% names(dic)) dic$fld___id <- random_id_vector(nrow(dic))
         dic <- tibble::as_tibble(dic)
 
-        if( !all(dic$id == col_ids_from_name(dic$id))){
+        if( !all(dic$id == clean_names(dic$id))){
           stop("Dictionary ids not clean to be uses as col names")
         }
         if(!all(original_names == dic$id)){
@@ -100,6 +100,7 @@ hdtableClass <- R6::R6Class(
       # if(!is.null(dd)){
       #   names(dd) <- c(dic$label, "rcd___id")
       # }
+      #names(dd) <- dic$id
       self$dd <- dd
 
       self$hdtable_type <- hdtable_type(paste0(dic$hdtype, collapse = "-"))

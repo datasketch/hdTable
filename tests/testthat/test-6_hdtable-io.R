@@ -24,7 +24,7 @@ test_that("Fringe IO works", {
 
   json <- jsonlite::read_json("tmp/tmp2/los-carros.json", simplifyVector = TRUE)
   str(json)
-  expect_equal(col_ids_from_name(names(d)),
+  expect_equal(clean_names(names(d)),
                names(json |> dplyr::select(-rcd___id)))
   expect_true(!is.null(json$rcd___id))
 
@@ -213,7 +213,7 @@ test_that("Folder read with slug", {
   readr::write_csv(dic, file.path(path, "cars.dic.csv"))
 
 
-  names(iris) <- col_ids_from_name(names(iris))
+  names(iris) <- clean_names(names(iris))
   readr::write_csv(iris, file.path(path, "iris.csv"))
   dic <- create_dic(iris)
   dic <- dic |>
@@ -248,7 +248,7 @@ test_that("Folder read with slug", {
   hdtable_write(h2, path)
 
   x <- hdtable_read(path, slug = "iris")
-  expect_equal(names(x$df()), col_ids_from_name(names(iris)))
+  expect_equal(names(x$df()), clean_names(names(iris)))
 
 
 })
