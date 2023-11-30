@@ -1,22 +1,22 @@
 test_that("Valid dic ids", {
 
   dic <- data.frame(id = c("valid_name", "valid_name_123"))
-  expect_true(valid_dic_ids(dic))
+  validate_dic_ids(dic)
 
   dic <- data.frame(id = c("Invalid_name", "rcd__id"))
-  expect_false(valid_dic_ids(dic))
+  expect_error(validate_dic_ids(dic))
 
   invalid_dic <- data.frame(id = c("Invalid_name", "rcd__id"))
-  expect_false(valid_dic_ids(invalid_dic))
+  expect_error(validate_dic_ids(invalid_dic))
 
   invalid_dic <- data.frame(id = c("invalid_name_", "rcd__id"))
-  expect_false(valid_dic_ids(invalid_dic))
+  expect_error(validate_dic_ids(invalid_dic))
 
   invalid_dic <- data.frame(id = c("_invalid_name", "rcd__id"))
-  expect_false(valid_dic_ids(invalid_dic))
+  expect_error(validate_dic_ids(invalid_dic))
 
   invalid_dic <- data.frame(id = c("123_invalid_name", "rcd__id"))
-  expect_false(valid_dic_ids(invalid_dic))
+  expect_error(validate_dic_ids(invalid_dic))
 
   ##
 
@@ -28,15 +28,15 @@ test_that("Valid dic ids", {
                     description = c("SPEED", "DIST"),
                     hdtype = c("Num", "Num"))
 
-  expect_true(valid_dic_ids(dic, d))
+  validate_dic_ids(dic, d)
 
 
   dic <- data.frame(id = c("helloo_x", "x_43"))
   d <- data.frame("helloo_x" = 1, "x_43" = 2, "nope" = 3)
-  valid_dic_ids(dic, d)
+  expect_error(valid_dic_ids(dic, d))
 
   d <- data.frame("helloo_x" = 1)
-  valid_dic_ids(dic, d)
+  expect_error(valid_dic_ids(dic, d))
 
 
 

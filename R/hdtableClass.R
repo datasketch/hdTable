@@ -66,12 +66,7 @@ hdtableClass <- R6::R6Class(
         if(!"fld___id" %in% names(dic)) dic$fld___id <- random_id_vector(nrow(dic))
         dic <- tibble::as_tibble(dic)
 
-        if( !valid_dic_ids(dic, d = d)){
-          stop("Dictionary ids not clean to be used as col names")
-        }
-        if(!all(original_names == dic$id)){
-          stop("names(d) do not correspond to clean dic_ids")
-        }
+        validate_dic_ids(dic, d = d)
 
       }
 
