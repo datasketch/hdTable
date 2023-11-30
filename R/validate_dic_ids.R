@@ -8,11 +8,13 @@ validate_dic_ids <- function(dic, d = NULL){
     # Table names and dic ids are consistent
     d_nms_ok <- all(nms %in% dic$id)
     if(!d_nms_ok){
-      stop("missing dic id: ", dstools::which_not_in(nms, dic$id))
+      stop("missing dic id: ",
+           dstools::collapse(dstools::which_not_in(nms, dic$id)))
     }
     dic_nms_ok <- all(dic$id %in% nms)
     if(!dic_nms_ok){
-      stop("missing column: ", dstools::which_not_in(dic$id, nms))
+      stop("missing column: ",
+           dstools::collapse(dstools::which_not_in(dic$id, nms)))
     }
   }
 
