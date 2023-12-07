@@ -22,10 +22,14 @@ hdtableClass <- R6::R6Class(
     preview_max_ncol = NULL,
     credits = NULL,
 
-    initialize = function(d, dic = NULL, hdtable_type = NULL,
-                          name = NULL, description = NULL,
-                          slug = NULL, meta = NULL,
-                          d_path = NULL, lazy = TRUE,
+    initialize = function(d, dic = NULL,
+                          hdtable_type = NULL,
+                          name = NULL,
+                          description = NULL,
+                          slug = NULL,
+                          meta = NULL,
+                          d_path = NULL,
+                          lazy = TRUE,
                           formats =  NULL,
                           stats = TRUE,
                           credits = NULL) {
@@ -68,12 +72,28 @@ hdtableClass <- R6::R6Class(
 
         validate_dic_ids(dic, d = d)
 
-        # reorder dic
-        # idx <- match(clean_names(names(d)), dic$id)
-        # dic <- dic |> dplyr::slice(idx)
+        # # reorder dic
+        # clean_nms <- clean_names(names(d)[names(d) != "rcd___id"])
+        # # When d is null, because lazy data from d_path, no need
+        # # to check order of dic
+        # if(!is.null(d) && !identical(clean_nms, dic$id)){
+        #   idx <- match(clean_nms, dic$id)
+        #   dic <- dic |> dplyr::slice(idx)
+        # }
 
       }
 
+
+      # reorder dic
+      clean_nms <- clean_names(original_names)
+      # When d is null, because lazy data from d_path,
+      # no need to check order of dic
+      if(!is.null(d) && !identical(clean_nms, dic$id)){
+        idx <- match(clean_nms, dic$id)
+        dic <- dic |> dplyr::slice(idx)
+      }
+
+      # Prepare data with the dic in the right order
       dd <- d
       if(!is_hdtibble(d)){
         dd <- hdtibble(d, dic)
@@ -94,7 +114,10 @@ hdtableClass <- R6::R6Class(
       self$formats <- formats
       self$meta <- meta
 
+
+
       self$dic <- dic
+
 
       # if(!is.null(dd)){
       #   names(dd) <- c(dic$label, "rcd___id")

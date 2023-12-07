@@ -100,6 +100,7 @@ test_that("hdtable creation with dictionaries work",{
                     id = c("petal_length", "species"),
                     hdtype = c("Num", "Cat"))
   f <- hdtable(d, dic = dic)
+  f$dic
   expect_equal(f$dic$id, rev(dic$id))
 
 
