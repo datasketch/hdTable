@@ -26,10 +26,10 @@ clean_names <- function(x) {
   #stringr::str_replace_all(names, "[[:punct:]]+", "_")
 
   # Remove unwanted characters and replace with underscores
-  ### x <- gsub("[^[:alnum:] ]", "_", x)
+  x <- gsub("[^[:alnum:] ]", "_", x)
 
   # Replace punctuation with underscores
-  x <- gsub("[[:punct:]]+","_",x)
+  x <- gsub("[[:punct:^_]]+","_",x)
 
   # Replace spaces with underscores
   x <- gsub(" ", "_", x)

@@ -15,6 +15,7 @@ test_that("multiplication works", {
 
   expect_equal( clean_names(c("*", "!")), c("x", "x_1") )
 
+  expect_equal(clean_names("at___rcd_id"), "at___rcd_id")
 
   expect_equal(clean_names(""), "x")
   expect_equal( clean_names("can\"'t"), "cant" )
