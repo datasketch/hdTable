@@ -68,6 +68,10 @@ hdtableClass <- R6::R6Class(
 
         validate_dic_ids(dic, d = d)
 
+        # reorder dic
+        # idx <- match(clean_names(names(d)), dic$id)
+        # dic <- dic |> dplyr::slice(idx)
+
       }
 
       dd <- d

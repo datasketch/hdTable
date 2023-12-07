@@ -90,6 +90,18 @@ test_that("hdtable creation with dictionaries work",{
   f3 <- hdtable(d, dic = dic)
   expect_equal(f3$name, f$name)
 
+  # Make sure dictionaries work even if they are
+  # in different order from the dataset
+
+  d <- head(iris)[, c("Species", "Petal.Length")]
+  names(d) <- c("species", "petal_length")
+
+  dic <- data.frame(label = c("Petal Length", "Species"),
+                    id = c("petal_length", "species"),
+                    hdtype = c("Num", "Cat"))
+  f <- hdtable(d, dic = dic)
+  expect_equal(f$dic$id, rev(dic$id))
+
 
 })
 

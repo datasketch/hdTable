@@ -32,7 +32,7 @@ hdtibble <- function(d, dic = NULL){
   names(d) <- clean_names(names(d))
   d <- as.data.frame(d)
 
-  # HERE GO ALL CASTS WITH GIVEN frType
+  # HERE GO ALL CASTS WITH GIVEN hdType
   dd <- purrr::map2(d, hdts_str, function(x1,y1){
     do.call(y1, list(x1))
   })
