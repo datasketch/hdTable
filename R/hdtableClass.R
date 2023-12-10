@@ -179,16 +179,24 @@ hdtableClass <- R6::R6Class(
       self$dic |>
         dplyr::select(-fld___id, -format, -stats)
     },
-    dic_csv = function(){
+    dic_csv = function(stats = FALSE, format = FALSE){
       dic <- self$dic
-      if(!"stats" %in% names(dic)){
-        dic <- update_dic(dic, self$dd, stats = self$stats)
+      if(stats){
+        if(!"stats" %in% names(dic)){
+          dic <- update_dic(dic, self$dd, stats = self$stats)
+        }
+        dic <- dic |>
+          dplyr::mutate(
+            stats = purrr::map_chr(stats, ~ jsonlite::toJSON(.,auto_unbox = TRUE))
+          )
       }
-      dic |>
-        dplyr::mutate(
-          format = purrr::map_chr(format, ~ jsonlite::toJSON(.,auto_unbox = TRUE)),
-          stats = purrr::map_chr(stats, ~ jsonlite::toJSON(.,auto_unbox = TRUE))
-        )
+      if(format){
+        dic |>
+          dplyr::mutate(
+            format = purrr::map_chr(format, ~ jsonlite::toJSON(.,auto_unbox = TRUE)),
+          )
+      }
+      dic
     },
     metadata = function(){
       base_info <- list(
