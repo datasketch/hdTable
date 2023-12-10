@@ -168,10 +168,10 @@ hdtableClass <- R6::R6Class(
       dout <- dout |> dplyr::select(-rcd___id)
       dout |> purrr::set_names(self$dic$id)
     },
-    df_slug_rcd = function(){
+    df_slug_rcd = function(flatten = FALSE){
       if(is.null(self$dd) && !self$lazy) return()
       self$dd_lazy_load()
-      dout <- hdtibble_as_basetype(self$dd)
+      dout <- hdtibble_as_basetype(self$dd, flatten = flatten)
       nms <- c(self$dic$id, "rcd___id")
       dout |> purrr::set_names(nms)
     },
@@ -232,7 +232,8 @@ hdtableClass <- R6::R6Class(
     write_csv = function(path = ""){
       if(!dir.exists(path)) dir.create(path, recursive = TRUE)
       save_path <- file.path(path, paste0(self$slug,".csv"))
-      readr::write_csv(self$df_slug_rcd(), save_path)
+      df <- self$df_slug_rcd(flatten = TRUE)
+      readr::write_csv(df, save_path)
       dic_path <- file.path(path,paste0(self$slug,".dic.csv"))
       dic <- self$dic_csv()
       readr::write_csv(dic, dic_path)

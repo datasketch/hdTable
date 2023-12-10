@@ -50,8 +50,11 @@ hdtibble <- function(d, dic = NULL){
 }
 
 
-hdtibble_as_basetype <- function(d){
-  purrr::map_df(d, as_basetype)
+hdtibble_as_basetype <- function(d, flatten = FALSE){
+  if(flatten){
+    return(purrr::map_df(d, as_basetype, flatten = TRUE))
+  }
+  purrr::map(d, as_basetype) |> tibble::as_tibble()
 }
 
 
