@@ -39,6 +39,12 @@ test_that("hdtable", {
   f2 <- list(hdtable(mtcars), hdtable(cars))
   expect_true(inherits(hdtable(cars),"hdtable"))
 
+  ## Defaults
+
+  # If slug provided, name takes that value
+  xx <- iris
+  h <- hdtable(xx, slug = "my-iris")
+  expect_equal(h$slug, h$name)
 
   ### SAMPLE DATA
 

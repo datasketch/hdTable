@@ -64,7 +64,7 @@ hdtable <- function(d,
     }
   }
 
-  name <- name %||% deparse(substitute(d))
+  name <- name %||% slug %||% deparse(substitute(d))
   meta <- c(meta, list(...))
   if(all(dstools::is.empty(meta))) meta <- NULL
 
