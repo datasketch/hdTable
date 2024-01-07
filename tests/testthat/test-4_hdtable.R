@@ -308,6 +308,15 @@ test_that("hdtable getters work", {
 
 })
 
+test_that("hdtable from turn works", {
+
+  d <- iris
+  hd_iris <- hdtable(d)
+  class(d) <- c(class(d), "turn_table")
+  expect_equal(create_dic(d)$label, names(d))
+  expect_equal(hdtable(d)$data, hd_iris$data)
+
+})
 
 
 

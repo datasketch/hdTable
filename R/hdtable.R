@@ -37,6 +37,12 @@ hdtable <- function(d,
 
   if(is_hdtable(d)) return(d)
 
+  # Remove turn classes
+  if(inherits(d, "turn_table") || inherits(d, "turn_tables")){
+    d_class <- class(d)
+    class(d) <- d_class[!d_class %in% c("turn_table", "turn_tables")]
+  }
+
   if(is.null(d)) return()
 
   # Check if it is a file

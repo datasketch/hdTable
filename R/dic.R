@@ -60,6 +60,11 @@ update_dic <- function(dic, d, stats = TRUE){
       stop("Names of data do not correspond to dictionary columns ids or labels")
   }
 
+  if(inherits(d, "turn_table") || inherits(d, "turn_tables")){
+    d_class <- class(d)
+    class(d) <- d_class[!d_class %in% c("turn_table", "turn_tables")]
+  }
+
   d <- d |> dplyr::select(-any_of("rcd___id"))
   # Update format and stats
   dic$format <- get_fields(d, dic, "format")
