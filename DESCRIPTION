@@ -20,7 +20,7 @@ Imports:
     tibble,
     dplyr,
     lubridate,
-    dstools (>= 0.1.0),
+    dstools (>= 0.1.2),
     purrr,
     jsonlite,
     geodato
