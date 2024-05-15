@@ -22,11 +22,9 @@ Imports:
     lubridate,
     dstools (>= 0.1.2),
     purrr,
-    jsonlite,
-    geodato
+    jsonlite
 Remotes:
     datasketch/dstools,
-    datasketch/geodato,
     datasketch/hdtype
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
